@@ -1,1 +1,1 @@
-# graphql-to-rest-migration
+# rest-to-graphql-migration
