@@ -13,6 +13,8 @@ docker compose up
 
 ```
 
+This will spin up both the frontend (port 5173) and the backend (port 4000).
+
 ## Local development without docker compose
 
 ### Frontend
