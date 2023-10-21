@@ -2,20 +2,19 @@ version: "3.8"
 
 services:
   server:
-    build: ./src/server
+    build: ./packages/server
     container_name: server_cont
     ports:
       - "4000:4000"
     volumes:
-      - ./src/server:/app
+      - ./packages/server:/app
       - /app/node_modules
 
   frontend:
-    build: ./src/frontend
+    build: ./packages/frontend
     container_name: frontend_cont
     ports:
       - "5173:5173"
     volumes:
-      - ./src/frontend:/app_f
+      - ./packages/frontend:/app_f
       - /app_f/node_modules
-    # stdin_open: true
