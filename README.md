@@ -1,9 +1,9 @@
-# rest-to-graphql-migration
+# Rest-to-graphql-migration
 
 An app trying to be useful, but being useful is beside the point here.
 
 
-# Local development with docker compose
+## Local development with docker compose
 
 1. Navigate to root
 2. Run the following
@@ -13,9 +13,9 @@ docker compose up
 
 ```
 
-# Local development without docker compose
+## Local development without docker compose
 
-## Frontend
+### Frontend
 
 1. Navigate to packages/frontend
 2. Run the following
@@ -25,7 +25,7 @@ docker compose up
 npm run dev
 
 ```
-## Backend
+### Backend
 
 1. Navigate to packages/backend
 2. Run the following
