@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  server:
+    build: ./packages/backend
+    container_name: server_cont
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./packages/backend:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./packages/frontend
+    container_name: frontend_cont
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./packages/frontend:/app_f
+      - /app_f/node_modules
