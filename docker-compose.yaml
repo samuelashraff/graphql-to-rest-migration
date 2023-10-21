@@ -2,12 +2,12 @@ version: "3.8"
 
 services:
   server:
-    build: ./packages/server
+    build: ./packages/backend
     container_name: server_cont
     ports:
       - "4000:4000"
     volumes:
-      - ./packages/server:/app
+      - ./packages/backend:/app
       - /app/node_modules
 
   frontend:
