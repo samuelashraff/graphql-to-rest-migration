@@ -1,26 +1,17 @@
 import CourseCard from "./CourseCard";
 
-export default function CourseGrid() {
+const CourseGrid: React.FC<{
+  courses: { id: number; cname: string; status: string }[];
+}> = ({ courses }) => {
   return (
     <div className="flex flex-wrap justify-center">
-      <div className="w-60 mb-4 p-1">
-        <CourseCard />
-      </div>
-      <div className="w-60 mb-4 p-1">
-        <CourseCard />
-      </div>
-      <div className="w-60 mb-4 p-1">
-        <CourseCard />
-      </div>
-      <div className="w-60 mb-4 p-1">
-        <CourseCard />
-      </div>
-      <div className="w-60 mb-4 p-1">
-        <CourseCard />
-      </div>
-      <div className="w-60 mb-4 p-1">
-        <CourseCard />
-      </div>
+      {courses.map((course) => (
+        <div key={course.id} className="w-60 mb-4 p-1">
+          <CourseCard course={course} />
+        </div>
+      ))}
     </div>
   );
-}
+};
+
+export default CourseGrid;

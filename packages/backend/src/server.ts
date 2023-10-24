@@ -5,11 +5,8 @@ const app = new Koa();
 
 app.use(cors());
 
-app.use(async (ctx) => {
-  ctx.body = {
-    data: "Data from server",
-  };
-});
+let courses = require("./courses.ts");
+app.use(courses.routes());
 
 const PORT = process.env.PORT || 4000;
 
