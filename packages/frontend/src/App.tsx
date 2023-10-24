@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { Button } from "@/components/ui/button";
+import CourseGrid from "./components/CourseGrid";
 
 function App() {
   const [data, setData] = useState(null);
@@ -16,6 +17,7 @@ function App() {
   return (
     <>
       <Button>Button</Button>
+      <CourseGrid />
       <pre>{data}</pre>
     </>
   );
