@@ -6,7 +6,7 @@ const CourseGrid: React.FC<{
   return (
     <div className="flex flex-wrap justify-center">
       {courses.map((course) => (
-        <div key={course.id} className="w-60 mb-4 p-1">
+        <div key={course.id} className="mb-4 p-1">
           <CourseCard course={course} />
         </div>
       ))}

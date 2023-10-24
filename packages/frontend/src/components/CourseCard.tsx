@@ -4,7 +4,7 @@ const CourseCard: React.FC<{ course: { cname: string; status: string } }> = ({
   course,
 }) => {
   return (
-    <Card className="max-w-xs rounded overflow-ellipsis shadow-lg h-40 flex flex-col">
+    <Card className="max-w-xs rounded overflow-ellipsis shadow-lg min-h-[175px] flex flex-col">
       <CardHeader className="h-2/3">
         <CardTitle>{course.cname}</CardTitle>
       </CardHeader>

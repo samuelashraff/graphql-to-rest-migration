@@ -9,7 +9,7 @@ function App() {
   >([]);
 
   useEffect(() => {
-    fetch("http://localhost:4000/courses")
+    fetch("http://localhost:4000")
       .then((res) => res.json())
       .then((data) => {
         setData(data);
