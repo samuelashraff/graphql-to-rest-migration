@@ -15,7 +15,7 @@ app.use(async (ctx) => {
 });
 
 
-router.post("/course", async (ctx) => {
+router.post("/courses", async (ctx) => {
   const { name, status, startDate, endDate } = ctx.request.query
   try {
     // A dummy version of inserting data using json-server named db.json in root of ./backend dir
@@ -26,10 +26,9 @@ router.post("/course", async (ctx) => {
       end: endDate
     }
 
+    // TODO: post data to DB
+
     ctx.response.status == 201
-    ctx.response.body = {
-      message: "Course created successfully"
-    }
   } catch (e) {
     ctx.response.status = 500
   }

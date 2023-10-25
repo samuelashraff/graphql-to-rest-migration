@@ -20,6 +20,8 @@ export function CreateCourseModal({ isOpen, closeModal }: { isOpen: boolean, clo
 
     const handleSubmit = async () => {
         try {
+            // TODO: Replace with backend URL when DB is set up
+            //Currently posts data to json-server
             fetch("http://localhost:3001/courses", {
                 method: "POST",
                 headers: {
