@@ -1,22 +1,26 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { Button } from "@/components/ui/button";
+import CourseGrid from "./components/CourseGrid";
 
 function App() {
-  const [data, setData] = useState(null);
+  const [courses, setData] = useState<
+    { id: number; cname: string; status: string }[]
+  >([]);
 
   useEffect(() => {
-    fetch("http://localhost:4000/")
+    fetch("http://localhost:4000")
       .then((res) => res.json())
       .then((data) => {
-        setData(data.data);
+        setData(data);
+        console.log(data);
       });
   }, []);
 
   return (
     <>
       <Button>Button</Button>
-      <pre>{data}</pre>
+      <CourseGrid courses={courses} />
     </>
   );
 }
