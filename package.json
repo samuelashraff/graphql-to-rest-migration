@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "docker compose build && docker compose watch",
+    "logs": "docker compose logs -f",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
