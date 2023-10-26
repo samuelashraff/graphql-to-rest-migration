@@ -6,15 +6,27 @@ services:
     container_name: server_cont
     ports:
       - "4000:4000"
-    volumes:
-      - ./packages/backend:/app
-      - /app/node_modules
+    develop:
+      watch:
+        - action: sync
+          path: ./packages/backend
+          target: /app
+          ignore:
+            - .packages/backend/node_modules/
+        - action: rebuild
+          path: ./packages/backend/package.json
 
   frontend:
     build: ./packages/frontend
     container_name: frontend_cont
     ports:
       - "5173:5173"
-    volumes:
-      - ./packages/frontend:/app_f
-      - /app_f/node_modules
+    develop:
+      watch:
+        - action: sync
+          path: ./packages/frontend
+          target: /app_f
+          ignore:
+            - .packages/frontend/node_modules/
+        - action: rebuild
+          path: ./packages/frontend/package.json
