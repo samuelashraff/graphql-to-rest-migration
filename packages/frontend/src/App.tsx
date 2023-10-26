@@ -1,7 +1,8 @@
 import "./App.css";
 import { Button } from "@/components/ui/button";
-import CourseGrid from "./components/CourseGrid";
+import CourseGrid from "@/components/CourseGrid";
 import { useLoaderData } from "react-router-dom";
+import { CourseSummary } from "@/types";
 
 export async function appLoader() {
   const courses = await fetch("http://localhost:4000").then((res) =>
@@ -12,11 +13,7 @@ export async function appLoader() {
 
 function App() {
   const { courses } = useLoaderData() as {
-    courses: {
-      id: number;
-      cname: string;
-      status: string;
-    }[];
+    courses: CourseSummary[];
   };
 
   return (
