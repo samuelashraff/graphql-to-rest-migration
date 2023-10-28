@@ -1,5 +1,5 @@
 export type CourseSummary = {
   id: number;
-  cname: string;
+  name: string;
   status: string;
 };

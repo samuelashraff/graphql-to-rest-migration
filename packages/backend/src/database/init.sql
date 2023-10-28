@@ -8,7 +8,7 @@ CREATE TABLE users (
 -- Create the courses table
 CREATE TABLE courses (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    cname TEXT NOT NULL,
+    name TEXT NOT NULL,
     credits INTEGER NOT NULL DEFAULT 5,
     user_id INTEGER NOT NULL DEFAULT 1,
     status TEXT CHECK (status IN ('not started', 'in progress', 'done')) NOT NULL DEFAULT 'not started',

@@ -41,7 +41,7 @@ rootRouter.post("/", async (ctx) => {
   const { name, status, startDate, endDate } = ctx.request.body as {name: string, status: string, startDate: Date, endDate: Date}
 
   sqliteDB.run(
-    `INSERT INTO courses (cname, status, start_date, end_date) VALUES
+    `INSERT INTO courses (name, status, start_date, end_date) VALUES
     ('${name}', '${status}', ${startDate}, ${endDate})`, (err) => {
       if(err) {
         console.error("Error while inserting course into the database:", err);
