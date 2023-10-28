@@ -1,4 +1,4 @@
-import Koa from "koa";
+import Koa, { Context } from "koa";
 import cors from "@koa/cors";
 import Router from "koa-router";
 
@@ -31,10 +31,33 @@ rootRouter.get("/", async (ctx, next) => {
   next();
 });
 
+rootRouter.post("/courses", async (ctx) => {
+  const { name, status, startDate, endDate } = ctx.request.query
+  try {
+    // A dummy version of inserting data using json-server named db.json in root of ./backend dir
+    const newData = {
+      name: name,
+      status: status,
+      start: startDate,
+      end: endDate
+    }
+
+    // TODO: post data to DB
+
+    ctx.response.status == 201
+  } catch (e) {
+    ctx.response.status = 500
+  }
+})
+
 const app = new Koa();
+
 
 app.use(cors());
 app.use(rootRouter.routes());
+
+
+
 
 const PORT = process.env.PORT || 4000;
 
