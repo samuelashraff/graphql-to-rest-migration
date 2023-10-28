@@ -4,7 +4,8 @@ import Router from "koa-router";
 import db from "./database/db";
 import bodyParser from "koa-bodyparser";
 
-const sqliteDB = db();
+const sqliteDB = db.getInstance();
+
 // routes: ADD THESE AS NEEDED
 // main (/) -> course list
 // course (/course/:id)
