@@ -9,9 +9,9 @@ CREATE TABLE users (
 CREATE TABLE courses (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     cname TEXT NOT NULL,
-    credits INTEGER NOT NULL,
-    user_id INTEGER NOT NULL,
-    status TEXT CHECK (status IN ('not started', 'in progress', 'done')) NOT NULL,
+    credits INTEGER NOT NULL DEFAULT 5,
+    user_id INTEGER NOT NULL DEFAULT 1,
+    status TEXT CHECK (status IN ('not started', 'in progress', 'done')) NOT NULL DEFAULT 'not started',
     notes TEXT,
     start_date DATE,
     end_date DATE,
