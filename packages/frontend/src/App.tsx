@@ -1,31 +1,32 @@
-import { useEffect, useState } from "react";
 import "./App.css";
 import { Button } from "@/components/ui/button";
-import {CreateCourseModal} from "./components/CreateCourseModal"
-import CourseGrid from "./components/CourseGrid";
+import { CreateCourseModal } from "./components/CreateCourseModal";
+import CourseGrid from "@/components/CourseGrid";
 
+import { useLoaderData } from "react-router-dom";
+import { CourseSummary } from "@/types";
+import { useState } from "react";
+
+export async function appLoader() {
+  const courses = await fetch("http://localhost:4000").then((res) =>
+    res.json()
+  );
+  return { courses };
+}
 
 function App() {
-  const [data, setData] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [courses, setCourses] = useState<
-    { id: number; cname: string; status: string }[]
-  >([]);
-
-  useEffect(() => {
-    fetch("http://localhost:4000")
-      .then((res) => res.json())
-      .then((data) => {
-        setCourses(data);
-        console.log(data);
-      });
-  }, []);
+  const { courses } = useLoaderData() as {
+    courses: CourseSummary[];
+  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
-      <pre>{data}</pre>
       <Button onClick={() => setIsModalOpen(true)}>Create Course</Button>
-      <CreateCourseModal isOpen={isModalOpen} closeModal={() => setIsModalOpen(false)}/>
+      <CreateCourseModal
+        isOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+      />
       <CourseGrid courses={courses} />
     </>
   );
