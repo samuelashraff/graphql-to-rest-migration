@@ -49,3 +49,11 @@ npm run dev
 npm run dev
 
 ```
+
+### json-server
+1. Navigate to packages/backend
+Run the following:
+
+```sh
+json-server --watch db.json --port 3001
+```
