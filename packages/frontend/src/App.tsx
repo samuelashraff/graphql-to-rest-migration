@@ -4,31 +4,22 @@ import { CreateCourseModal } from "./components/CreateCourseModal";
 import CourseGrid from "@/components/CourseGrid";
 
 import { useLoaderData } from "react-router-dom";
-import { CourseSummary } from "@/types";
 import { useState } from "react";
-
-export async function appLoader() {
-  const courses = await fetch("http://localhost:4000").then((res) =>
-    res.json()
-  );
-  return { courses };
-}
+import { Course } from "./types";
 
 function App() {
-  const { courses } = useLoaderData() as {
-    courses: CourseSummary[];
-  };
+  const { courses } = useLoaderData() as { courses: Course[] };
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <>
+    <div>
       <Button onClick={() => setIsModalOpen(true)}>Create Course</Button>
       <CreateCourseModal
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
       />
       <CourseGrid courses={courses} />
-    </>
+    </div>
   );
 }
 
