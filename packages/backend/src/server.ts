@@ -1,7 +1,7 @@
 import Koa from "koa";
 import cors from "@koa/cors";
 import bodyParser from "koa-bodyparser";
-import { rootRouter } from "./routes";
+import { rootRouter, coursesRouter } from "./routes";
 
 // routes: ADD THESE AS NEEDED
 // main (/) -> course list
@@ -14,6 +14,7 @@ const app = new Koa();
 app.use(bodyParser());
 app.use(cors());
 app.use(rootRouter.routes());
+app.use(coursesRouter.routes());
 
 const PORT = process.env.PORT || 4000;
 
