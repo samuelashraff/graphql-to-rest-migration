@@ -9,11 +9,10 @@ export const coursesRouter = new Router({
 
 coursesRouter.get("/:id", async (ctx, next) => {
   const { id } = ctx.params;
-  console.log("file: courses.ts~line: 11~id", id);
 
   try {
     const rows = await new Promise((resolve, reject) => {
-      db.all(`SELECT * FROM courses WHERE id = ${id}`, [], (err, rows) => {
+      db.get(`SELECT * FROM courses WHERE id = ${id}`, [], (err, rows) => {
         if (err) {
           reject(err);
         } else {

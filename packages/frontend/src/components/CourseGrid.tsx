@@ -1,8 +1,8 @@
-import { CourseSummary } from "@/types";
+import { Course } from "@/types";
 import CourseCard from "./CourseCard";
 
 const CourseGrid: React.FC<{
-  courses: CourseSummary[];
+  courses: Course[];
 }> = ({ courses }) => {
   return (
     <div className="flex flex-wrap justify-center">
