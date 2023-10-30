@@ -6,14 +6,13 @@ import "./index.css";
 import { CourseView } from "./CourseView.tsx";
 import { Course } from "./types/index.ts";
 import { Layout } from "./components/Layout.tsx";
-
-const ROOT_URL = "http://localhost:4000";
+import { BASE_URL } from "./config.ts";
 
 const router = createBrowserRouter([
   {
     path: "/",
     loader: async () => {
-      const courses = (await fetch(ROOT_URL).then((res) =>
+      const courses = (await fetch(BASE_URL).then((res) =>
         res.json(),
       )) as Course[];
 
@@ -28,7 +27,7 @@ const router = createBrowserRouter([
   {
     path: "/course/:id",
     loader: async ({ params }) => {
-      const course = await fetch(`${ROOT_URL}/courses/${params.id}`).then(
+      const course = await fetch(`${BASE_URL}/courses/${params.id}`).then(
         (res) => res.json(),
       );
       return { course };

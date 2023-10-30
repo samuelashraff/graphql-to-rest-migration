@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ReactModal from 'react-modal';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
+import { BASE_URL } from '@/config';
 
 ReactModal.setAppElement("#root")
 
@@ -20,7 +21,7 @@ export function CreateCourseModal({ isOpen, closeModal }: { isOpen: boolean, clo
 
     const handleSubmit = async () => {
         try {          
-            fetch("http://localhost:4000", {
+            fetch(BASE_URL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
