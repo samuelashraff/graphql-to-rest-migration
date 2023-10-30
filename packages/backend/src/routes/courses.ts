@@ -30,3 +30,23 @@ coursesRouter.get("/:id", async (ctx, next) => {
   }
   next();
 });
+
+coursesRouter.delete("/:id", async (ctx, next) => {
+  const { id } = ctx.params
+
+  try {
+    await new Promise((resolve, reject) => {
+      db.run(`DELETE FROM courses WHERE id = ${id}`, [], (err) => {
+        if (err) {
+          reject(err)
+        }
+      })
+    })
+    ctx.status = 200
+  } catch (error) {
+    console.error("Error while deleting course from database")
+    ctx.status = 500
+    ctx.body = { error: "Internal Server Error" }
+  }
+  next()
+})
