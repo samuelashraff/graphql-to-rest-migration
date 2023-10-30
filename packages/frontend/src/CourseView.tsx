@@ -1,6 +1,7 @@
 import { Badge } from "./components/ui/badge";
 import { Button } from "./components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
+import { BASE_URL } from "./config";
 import { Course } from "./types";
 import { useLoaderData } from "react-router-dom";
 
@@ -18,9 +19,9 @@ export const CourseView = () => {
   } = course;
 
 
-  const handleDelete = async () => {
+  const deleteCourse = async () => {
     try {
-      await fetch(`http://localhost:4000/courses/${course.id}`, {
+      await fetch(`${BASE_URL}/courses/${course.id}`, {
         method: "DELETE"
       })
     }
@@ -51,7 +52,7 @@ cursor-default hover:cursor-pointer
           Status: <Badge>{status}</Badge>
         </p>
       </CardContent>
-      <Button onClick={handleDelete}>Delete course</Button>
+      <Button onClick={deleteCourse}>Delete course</Button>
     </Card>
   );
 };
