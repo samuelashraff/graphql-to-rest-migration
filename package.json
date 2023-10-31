@@ -1,21 +1,23 @@
 {
-  "name": "rest-to-graphql-migration",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "docker compose build && docker compose watch",
-    "logs": "docker compose logs -f",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/samuelashraff/rest-to-graphql-migration.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/samuelashraff/rest-to-graphql-migration/issues"
-  },
-  "homepage": "https://github.com/samuelashraff/rest-to-graphql-migration#readme"
+    "name": "rest-to-graphql-migration",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "docker compose build && docker compose watch",
+        "logs": "docker compose logs -f",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "format:write": "npx prettier --config .prettierrc.json --write \"./**/*.{ts,js,tsx,json,html,css,md}\"",
+        "format:check": "npx prettier --config .prettierrc.json  \"./**/*.{ts,js,tsx,json,html,css,md}\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/samuelashraff/rest-to-graphql-migration.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/samuelashraff/rest-to-graphql-migration/issues"
+    },
+    "homepage": "https://github.com/samuelashraff/rest-to-graphql-migration#readme"
 }
