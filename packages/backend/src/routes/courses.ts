@@ -50,3 +50,29 @@ coursesRouter.delete("/:id", async (ctx, next) => {
   }
   next()
 })
+
+coursesRouter.put("/:id", async (ctx, next) => {
+  const { id } = ctx.params
+  const { name, status } = ctx.request.body as {
+    name: string,
+    status: string
+  }
+
+  try {
+    await new Promise((resolve, reject) => {
+      db.run(
+        `UPDATE courses SET name = '${name}', status = '${status}' WHERE id = ${id}`,
+        [],
+        (err) => {
+          if (err) {
+            reject(err)
+          }
+        })
+    })
+    ctx.status = 200
+  }
+  catch (error) {
+    ctx.status = 500
+    console.error("Error while updating course in DB: ", error)
+  }
+})
