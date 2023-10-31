@@ -12,13 +12,13 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div>
-      <Button onClick={() => setIsModalOpen(true)}>Create Course</Button>
+    <div className="flex flex-col gap-8">
       <CreateCourseModal
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
       />
       <CourseGrid courses={courses} />
+      <Button className="self-center" onClick={() => setIsModalOpen(true)}>Add Course</Button>
     </div>
   );
 }
