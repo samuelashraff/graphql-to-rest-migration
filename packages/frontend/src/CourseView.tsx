@@ -4,7 +4,7 @@ import { Button } from "./components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import { BASE_URL } from "./config";
 import { Course } from "./types";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
 import { Edit, Trash } from "lucide-react";
@@ -113,15 +113,23 @@ export const CourseView = () => {
   } = course;
 
   const [isEditMode, setIsEditMode] = useState(false);
+  const navigate = useNavigate();
 
   const deleteCourse = async () => {
-   const shouldDelete = window.confirm('Are you sure you want to delete this course?');
-   if (!shouldDelete) return;
+    const shouldDelete = window.confirm(
+      "Are you sure you want to delete this course?",
+    );
+    if (!shouldDelete) return;
 
     try {
-      await fetch(`${BASE_URL}/courses/${course.id}`, {
+      console.log("deleting");
+      fetch(`${BASE_URL}/courses/${course.id}`, {
         method: "DELETE",
+      }).then(() => {
+        console.log("here");
+        navigate("/", { replace: true });
       });
+      console.log("navigating");
     } catch (error) {
       console.error("Error: ", error);
     }

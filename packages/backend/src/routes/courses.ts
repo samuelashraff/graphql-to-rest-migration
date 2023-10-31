@@ -47,15 +47,20 @@ coursesRouter.get("/:id", async (ctx, next) => {
 
 coursesRouter.delete("/:id", async (ctx, _next) => {
   const { id } = ctx.params;
+  console.log("deleting");
 
   try {
-    await new Promise((_resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       db.run(`DELETE FROM courses WHERE id = ${id}`, [], (err) => {
         if (err) {
           reject(err);
+        } else {
+          resolve();
         }
       });
     });
+
+    console.log("Course deleted from database");
     ctx.status = 200;
   } catch (error) {
     console.error("Error while deleting course from database");
