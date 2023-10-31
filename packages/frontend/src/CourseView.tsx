@@ -149,15 +149,22 @@ export const CourseView = () => {
         <>
           <CardContent className="flex flex-col  items-start h-1/3">
             <p>
-              Dates: {start_date} - {end_date}
+              <strong>Dates: </strong> {start_date} - {end_date}
             </p>
             <p>
-              Credits: <Badge>{credits}</Badge>
+              <strong>Credits:</strong> <Badge>{credits}</Badge>
             </p>
-            <p>Location: {location}</p>
-            <p>Organiser: {responsible_teacher}</p>
             <p>
-              Status: <Badge>{status}</Badge>
+              <strong>Location: </strong>
+              {location}
+            </p>
+            <p>
+              <strong>Organiser: </strong>
+              {responsible_teacher}
+            </p>
+            <p>
+              <strong>Status: </strong>
+              <Badge>{status}</Badge>
             </p>
           </CardContent>
           <div className="flex gap-4 self-center">
