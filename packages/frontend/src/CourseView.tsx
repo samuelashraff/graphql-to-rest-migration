@@ -8,7 +8,13 @@ import { useLoaderData } from "react-router-dom";
 import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
 
-const CourseDetailEditForm = ({ course, setIsEditMode }) => {
+const CourseDetailEditForm = ({
+  course,
+  setIsEditMode,
+}: {
+  course: Course;
+  setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const initialCourseDetails = course;
 
   const [courseDetailEdits, setCourseDetailEdits] = useReducer(
@@ -25,10 +31,7 @@ const CourseDetailEditForm = ({ course, setIsEditMode }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          // name: editedName,
-          // status: editedStatus,
-        }),
+        body: JSON.stringify(courseDetailEdits),
       });
       setIsEditMode(false);
     } catch (error) {
