@@ -3,20 +3,40 @@ import CourseCard from "./CourseCard";
 import { Typography } from "./ui/typogrpahy";
 
 function toTitleCase(str: string) {
-  return str.replace(
-    /\w\S*/g,
-    function(txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    }
+  return str.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+}
+
+type MapValuesToKeysIfAllowed<T> = {
+  [K in keyof T]: T[K] extends PropertyKey ? K : never;
+};
+type Filter<T> = MapValuesToKeysIfAllowed<T>[keyof T];
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function groupBy<T extends Record<PropertyKey, any>, Key extends Filter<T>>(
+  arr: T[],
+  key: Key,
+): Record<T[Key], T[]> {
+  return arr.reduce(
+    (accumulator, val) => {
+      const groupedKey = val[key];
+      if (!accumulator[groupedKey]) {
+        accumulator[groupedKey] = [];
+      }
+      accumulator[groupedKey].push(val);
+      return accumulator;
+    },
+    {} as Record<T[Key], T[]>,
   );
 }
 
 const CourseGrid: React.FC<{
   courses: Course[];
 }> = ({ courses }) => {
-  const groupedCourses: { [key: string]: Course[] } = Object.groupBy(
+  const groupedCourses: { [key: string]: Course[] } = groupBy(
     courses,
-    (course: Course) => course.status,
+    'status'
   );
   const statuses = ["not started", "in progress", "done"];
 
