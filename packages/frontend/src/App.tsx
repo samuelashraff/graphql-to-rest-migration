@@ -8,19 +8,24 @@ import { useState } from "react";
 import { Course } from "./types";
 
 function App() {
-  const { courses } = useLoaderData() as { courses: Course[] };
-  const [isModalOpen, setIsModalOpen] = useState(false);
+    const { courses } = useLoaderData() as { courses: Course[] };
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-  return (
-    <div className="flex flex-col gap-8">
-      <CreateCourseModal
-        isOpen={isModalOpen}
-        closeModal={() => setIsModalOpen(false)}
-      />
-      <CourseGrid courses={courses} />
-      <Button className="self-center" onClick={() => setIsModalOpen(true)}>Add Course</Button>
-    </div>
-  );
+    return (
+        <div className="flex flex-col gap-8">
+            <CreateCourseModal
+                isOpen={isModalOpen}
+                closeModal={() => setIsModalOpen(false)}
+            />
+            <CourseGrid courses={courses} />
+            <Button
+                className="self-center"
+                onClick={() => setIsModalOpen(true)}
+            >
+                Add Course
+            </Button>
+        </div>
+    );
 }
 
 export default App;
