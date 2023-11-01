@@ -26,3 +26,12 @@ export type Assignment = {
     obligatory: boolean;
     group: boolean;
 };
+
+export type Lecture = {
+    id: number;
+    date: Date;
+    startTime: string;
+    endTime: string;
+    location: string;
+    obligatory: boolean;
+};

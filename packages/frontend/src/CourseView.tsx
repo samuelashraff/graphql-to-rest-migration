@@ -3,6 +3,7 @@ import { CourseDetailCard } from "./components/CourseDetails";
 import { Typography } from "./components/ui/typogrpahy";
 import { Course } from "./types";
 import AssignmentCard from "./components/AssignmentCard";
+import LectureCard from "./components/LectureCard";
 
 function toTitleCase(str: string) {
     return str.replace(/\w\S*/g, function (txt) {
@@ -20,7 +21,18 @@ export const CourseView = () => {
         },
         {
             title: "lectures",
-            elements: [<CourseDetailCard course={course} />],
+            elements: [
+                <LectureCard
+                    lecture={{
+                        id: 0,
+                        date: new Date(),
+                        startTime: "10:00",
+                        endTime: "12:00",
+                        obligatory: false,
+                        location: "Undergraduate Center",
+                    }}
+                />,
+            ],
         },
         {
             title: "assignments",
