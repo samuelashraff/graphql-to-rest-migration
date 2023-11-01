@@ -17,3 +17,12 @@ export type Course = {
     location: string;
     course_link: string;
 };
+
+export type Assignment = {
+    id: number;
+    name: string;
+    type: "exam" | "report";
+    deadline: Date;
+    obligatory: boolean;
+    group: boolean;
+};

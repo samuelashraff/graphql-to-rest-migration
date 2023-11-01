@@ -144,9 +144,7 @@ export const CourseDetailCard = ({ course }: { course: Course }) => {
         <Card
             className="p-4 flex 
             flex-col rounded 
-            overflow-ellipsis 
-            shadow-lg min-h-[175px]
-            cursor-default hover:cursor-pointer"
+            shadow-lg"
         >
             {isEditMode ? (
                 <CourseDetailEditForm

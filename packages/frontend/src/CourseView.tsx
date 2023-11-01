@@ -2,6 +2,7 @@ import { useLoaderData } from "react-router-dom";
 import { CourseDetailCard } from "./components/CourseDetails";
 import { Typography } from "./components/ui/typogrpahy";
 import { Course } from "./types";
+import AssignmentCard from "./components/AssignmentCard";
 
 function toTitleCase(str: string) {
     return str.replace(/\w\S*/g, function (txt) {
@@ -23,7 +24,18 @@ export const CourseView = () => {
         },
         {
             title: "assignments",
-            elements: [<CourseDetailCard course={course} />],
+            elements: [
+                <AssignmentCard
+                    assignment={{
+                        id: 0,
+                        name: "Test assignment",
+                        deadline: new Date(),
+                        group: false,
+                        obligatory: true,
+                        type: "report",
+                    }}
+                />,
+            ],
         },
     ];
 
