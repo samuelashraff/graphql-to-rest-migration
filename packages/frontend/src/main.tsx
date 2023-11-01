@@ -27,10 +27,10 @@ const router = createBrowserRouter([
     {
         path: "/course/:id",
         loader: async ({ params }) => {
-            const course = await fetch(`${BASE_URL}/courses/${params.id}`).then(
+            const data = await fetch(`${BASE_URL}/courses/${params.id}`).then(
                 (res) => res.json(),
             );
-            return { course };
+            return { ...data };
         },
         element: (
             <Layout>

@@ -37,6 +37,8 @@ CREATE TABLE lectures (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     course_id INTEGER NOT NULL,
     date DATE,
+    start_time TEXT,
+    end_time TEXT,
     location TEXT,
     is_obligatory BOOLEAN,
     FOREIGN KEY (course_id) REFERENCES courses(id)

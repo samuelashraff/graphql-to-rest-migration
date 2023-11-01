@@ -30,8 +30,8 @@ export type Assignment = {
 export type Lecture = {
     id: number;
     date: Date;
-    startTime: string;
-    endTime: string;
+    start_time: string;
+    end_time: string;
     location: string;
     obligatory: boolean;
 };

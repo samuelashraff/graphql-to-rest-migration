@@ -25,7 +25,7 @@ coursesRouter.get("/:id", async (ctx, next) => {
     const { id } = ctx.params;
 
     try {
-        const rows = await new Promise((resolve, reject) => {
+        const course = await new Promise((resolve, reject) => {
             db.get(
                 `SELECT * FROM courses WHERE id = ${id}`,
                 [],
@@ -39,7 +39,35 @@ coursesRouter.get("/:id", async (ctx, next) => {
             );
         });
 
-        ctx.body = rows;
+        const assignments = await new Promise((resolve, reject) => {
+            db.all(
+                `SELECT * FROM assignments WHERE course_id = ${id}`,
+                [],
+                (err, rows) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(rows);
+                    }
+                },
+            );
+        });
+
+        const lectures = await new Promise((resolve, reject) => {
+            db.all(
+                `SELECT * FROM lectures WHERE course_id = ${id}`,
+                [],
+                (err, rows) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(rows);
+                    }
+                },
+            );
+        });
+
+        ctx.body = { course, assignments, lectures };
         ctx.status = 200;
     } catch (error) {
         console.error("Error while querying the database:", error);
