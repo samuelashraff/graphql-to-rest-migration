@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+import { Card, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Assignment } from "@/types";
 
 function toTitleCase(str: string) {
@@ -11,22 +11,22 @@ const AssignmentCard: React.FC<{ assignment: Assignment }> = ({
     assignment,
 }) => {
     return (
-        <Card className="p-4 rounded overflow-ellipsis shadow-lg">
+        <Card className="rounded shadow-lg">
             <CardHeader>
                 <CardTitle>{`${toTitleCase(assignment.type)} - ${new Date(
                     assignment.deadline,
                 ).toLocaleDateString()}`}</CardTitle>
+                <CardDescription className="flex flex-row justify-center gap-4">
+                    <p>
+                        <strong>Obligatory: </strong>
+                        {assignment.is_obligatory ? "yes" : "no"}
+                    </p>
+                    <p>
+                        <strong>Groupwork: </strong>
+                        {assignment.is_group ? "yes" : "no"}
+                    </p>
+                </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col items-start">
-                <p>
-                    <strong>Obligatory: </strong>
-                    {assignment.obligatory ? "yes" : "no"}
-                </p>
-                <p>
-                    <strong>Groupwork: </strong>
-                    {assignment.group ? "yes" : "no"}
-                </p>
-            </CardContent>
         </Card>
     );
 };

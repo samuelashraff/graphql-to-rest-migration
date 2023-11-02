@@ -23,8 +23,8 @@ export type Assignment = {
     name: string;
     type: "exam" | "report";
     deadline: Date;
-    obligatory: boolean;
-    group: boolean;
+    is_obligatory: boolean;
+    is_group: boolean;
 };
 
 export type Lecture = {
@@ -33,5 +33,5 @@ export type Lecture = {
     start_time: string;
     end_time: string;
     location: string;
-    obligatory: boolean;
+    is_obligatory: boolean;
 };

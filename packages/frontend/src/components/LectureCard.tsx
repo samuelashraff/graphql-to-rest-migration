@@ -1,28 +1,26 @@
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Lecture } from "@/types";
 
 const LectureCard: React.FC<{ lecture: Lecture }> = ({ lecture }) => {
     return (
-        <Card className="p-4 rounded overflow-ellipsis shadow-lg">
+        <Card className="rounded overflow-ellipsis shadow-lg">
             <CardHeader>
                 <CardTitle>
-                    {new Date(lecture.date).toLocaleDateString()}
+                    {`${new Date(lecture.date).toLocaleDateString()}, ${
+                        lecture.start_time
+                    } - ${lecture.end_time}`}
                 </CardTitle>
+                <CardDescription className="flex flex-row justify-center gap-4">
+                    <p>
+                        <strong>Location: </strong>
+                        {lecture.location}
+                    </p>
+                    <p>
+                        <strong>Obligatory: </strong>
+                        {lecture.is_obligatory ? "yes" : "no"}
+                    </p>
+                </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col items-start">
-                <p>
-                    <strong>Time: </strong>
-                    {`${lecture.start_time} - ${lecture.end_time}`}
-                </p>
-                <p>
-                    <strong>Location: </strong>
-                    {lecture.location}
-                </p>
-                <p>
-                    <strong>Obligatory: </strong>
-                    {lecture.obligatory ? "yes" : "no"}
-                </p>
-            </CardContent>
         </Card>
     );
 };

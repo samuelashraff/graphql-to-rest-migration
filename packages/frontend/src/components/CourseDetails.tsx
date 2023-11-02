@@ -142,7 +142,7 @@ export const CourseDetailCard = ({ course }: { course: Course }) => {
 
     return (
         <Card
-            className="p-4 flex 
+            className="pt-6 pb-6 flex 
             flex-col rounded 
             shadow-lg"
         >
