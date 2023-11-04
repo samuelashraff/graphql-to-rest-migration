@@ -94,12 +94,12 @@ export const CourseView = () => {
                 </Button>
                 <Typography variant="h1">{data.course.name}</Typography>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-3 gap-4 grid-cols-1">
                 {columns.map((col) => {
                     return (
                         <div
                             key={col.title}
-                            className="col-span-1 flex flex-col gap-4"
+                            className="col-span-1 flex flex-col gap-4 min-w-min"
                         >
                             <Typography variant="h2">
                                 {toTitleCase(col.title)}
