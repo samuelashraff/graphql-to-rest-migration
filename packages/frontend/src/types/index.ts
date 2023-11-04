@@ -20,7 +20,6 @@ export type Course = {
 
 export type Assignment = {
     id: number;
-    name: string;
     type: "exam" | "report";
     deadline: Date;
     is_obligatory: boolean;

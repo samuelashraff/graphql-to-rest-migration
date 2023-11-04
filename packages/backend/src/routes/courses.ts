@@ -143,3 +143,31 @@ coursesRouter.put("/:id", async (ctx, _next) => {
         console.error("Error while updating course in DB: ", error);
     }
 });
+
+coursesRouter.post("/:id/assignments", async (ctx) => {
+    const { id } = ctx.params;
+
+    const { type, deadline, is_obligatory, is_group } = ctx.request.body as {
+        type: string;
+        deadline: Date;
+        is_obligatory: boolean;
+        is_group: boolean;
+    };
+
+    db.run(
+        `INSERT INTO assignments (course_id, type, deadline, is_obligatory, is_group) VALUES
+    ('${id}', '${type}', '${deadline}', ${is_obligatory}, ${is_group})`,
+        (err) => {
+            if (err) {
+                console.error(
+                    "Error while inserting assignment into the database:",
+                    err,
+                );
+                ctx.body = { error: "Internal Server Error" };
+                ctx.response.status = 500;
+            } else {
+                ctx.response.status = 201;
+            }
+        },
+    );
+});

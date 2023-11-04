@@ -4,6 +4,10 @@ import { Typography } from "./components/ui/typogrpahy";
 import { Assignment, Course, Lecture } from "./types";
 import AssignmentCard from "./components/AssignmentCard";
 import LectureCard from "./components/LectureCard";
+import { Plus } from "lucide-react";
+import { Button } from "./components/ui/button";
+import { useState } from "react";
+import { AssignmentForm } from "./components/AssignmentForm";
 
 function toTitleCase(str: string) {
     return str.replace(/\w\S*/g, function (txt) {
@@ -17,6 +21,7 @@ export const CourseView = () => {
         assignments: Assignment[];
         lectures: Lecture[];
     };
+    const [showAssignmentForm, setShowAssignmentForm] = useState(false);
 
     const columns = [
         {
@@ -25,15 +30,40 @@ export const CourseView = () => {
         },
         {
             title: "lectures",
-            elements: data.lectures.map((lecture) => (
-                <LectureCard lecture={lecture} />
-            )),
+            elements: [
+                ...data.lectures.map((lecture) => (
+                    <LectureCard lecture={lecture} />
+                )),
+                <Button variant="outline" size="icon" className="self-center">
+                    <Plus />
+                </Button>,
+            ],
         },
         {
             title: "assignments",
-            elements: data.assignments.map((assignment) => (
-                <AssignmentCard assignment={assignment} />
-            )),
+            elements: [
+                ...data.assignments.map((assignment) => (
+                    <AssignmentCard assignment={assignment} />
+                )),
+                showAssignmentForm ? (
+                    <AssignmentForm
+                        setShowAssignmentForm={setShowAssignmentForm}
+                        courseId={data.course.id}
+                    />
+                ) : (
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="self-center"
+                        onClick={() => {
+                            setShowAssignmentForm(true);
+                            console.log(showAssignmentForm);
+                        }}
+                    >
+                        <Plus />
+                    </Button>
+                ),
+            ],
         },
     ];
 
