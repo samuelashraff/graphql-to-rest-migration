@@ -41,7 +41,7 @@ coursesRouter.get("/:id", async (ctx, next) => {
 
         const assignments = await new Promise((resolve, reject) => {
             db.all(
-                `SELECT * FROM assignments WHERE course_id = ${id}`,
+                `SELECT * FROM assignments WHERE course_id = ${id} ORDER BY deadline ASC`,
                 [],
                 (err, rows) => {
                     if (err) {
@@ -55,7 +55,7 @@ coursesRouter.get("/:id", async (ctx, next) => {
 
         const lectures = await new Promise((resolve, reject) => {
             db.all(
-                `SELECT * FROM lectures WHERE course_id = ${id}`,
+                `SELECT * FROM lectures WHERE course_id = ${id} ORDER BY date ASC`,
                 [],
                 (err, rows) => {
                     if (err) {
