@@ -88,7 +88,10 @@ export const CourseView = () => {
 
     return (
         <div className="flex flex-col gap-10 flex-grow">
-            <div className="flex">
+            <div className="flex gap-10">
+                <Button asChild className="self-center">
+                    <a href="/">Back</a>
+                </Button>
                 <Typography variant="h1">{data.course.name}</Typography>
             </div>
             <div className="grid grid-cols-3 gap-4">
