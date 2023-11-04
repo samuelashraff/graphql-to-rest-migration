@@ -1,9 +1,53 @@
+import { useState } from "react";
+import { useRevalidator } from "react-router-dom";
+
+import { BASE_URL } from "@/config";
+import { Trash } from "lucide-react";
+import { Button } from "./ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Lecture } from "@/types";
 
 const LectureCard: React.FC<{ lecture: Lecture }> = ({ lecture }) => {
+    const [showOptions, setShowOptions] = useState(false);
+
+    const revalidator = useRevalidator();
+
+    const deleteAssignment = async () => {
+        try {
+            await fetch(`${BASE_URL}/lectures/${lecture.id}`, {
+                method: "DELETE",
+            }).then(() => {
+                revalidator.revalidate();
+            });
+        } catch (error) {
+            console.error("Error: ", error);
+        }
+    };
+
+    const lectureOptions = () => {
+        if (showOptions) {
+            return (
+                <div className="z-10 absolute inset-0 bg-white">
+                    <div className="flex h-full justify-center items-center">
+                        <Button
+                            variant={"destructive"}
+                            onClick={deleteAssignment}
+                        >
+                            <Trash />
+                        </Button>
+                    </div>
+                </div>
+            );
+        }
+        return null;
+    };
+
     return (
-        <Card className="rounded overflow-ellipsis shadow-lg">
+        <Card
+            className="rounded shadow-lg relative cursor-pointer"
+            onClick={() => setShowOptions(!showOptions)}
+        >
+            {lectureOptions()}
             <CardHeader>
                 <CardTitle>
                     {`${new Date(lecture.date).toLocaleDateString()}, ${
