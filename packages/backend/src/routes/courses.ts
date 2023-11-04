@@ -171,3 +171,33 @@ coursesRouter.post("/:id/assignments", async (ctx) => {
         },
     );
 });
+
+coursesRouter.post("/:id/lectures", async (ctx) => {
+    const { id } = ctx.params;
+
+    const { date, start_time, end_time, location, is_obligatory } = ctx.request
+        .body as {
+        date: Date;
+        start_time: string;
+        end_time: string;
+        location: string;
+        is_obligatory: boolean;
+    };
+
+    db.run(
+        `INSERT INTO lectures (course_id, date, start_time, end_time, location, is_obligatory) VALUES
+    ('${id}', '${date}', '${start_time}', '${end_time}', '${location}', ${is_obligatory})`,
+        (err) => {
+            if (err) {
+                console.error(
+                    "Error while inserting lecture into the database:",
+                    err,
+                );
+                ctx.body = { error: "Internal Server Error" };
+                ctx.response.status = 500;
+            } else {
+                ctx.response.status = 201;
+            }
+        },
+    );
+});

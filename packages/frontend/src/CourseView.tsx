@@ -8,6 +8,7 @@ import { Plus } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { useState } from "react";
 import { AssignmentForm } from "./components/AssignmentForm";
+import { LectureForm } from "./components/LectureForm";
 
 function toTitleCase(str: string) {
     return str.replace(/\w\S*/g, function (txt) {
@@ -22,28 +23,46 @@ export const CourseView = () => {
         lectures: Lecture[];
     };
     const [showAssignmentForm, setShowAssignmentForm] = useState(false);
+    const [showLectureForm, setShowLectureForm] = useState(false);
 
     const columns = [
         {
             title: "details",
-            elements: [<CourseDetailCard course={data.course} />],
+            elements: [
+                <CourseDetailCard key={data.course.id} course={data.course} />,
+            ],
         },
         {
             title: "lectures",
             elements: [
                 ...data.lectures.map((lecture) => (
-                    <LectureCard lecture={lecture} />
+                    <LectureCard key={lecture.id} lecture={lecture} />
                 )),
-                <Button variant="outline" size="icon" className="self-center">
-                    <Plus />
-                </Button>,
+                showLectureForm ? (
+                    <LectureForm
+                        setShowLectureForm={setShowLectureForm}
+                        courseId={data.course.id}
+                    />
+                ) : (
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="self-center"
+                        onClick={() => setShowLectureForm(true)}
+                    >
+                        <Plus />
+                    </Button>
+                ),
             ],
         },
         {
             title: "assignments",
             elements: [
                 ...data.assignments.map((assignment) => (
-                    <AssignmentCard assignment={assignment} />
+                    <AssignmentCard
+                        key={assignment.id}
+                        assignment={assignment}
+                    />
                 )),
                 showAssignmentForm ? (
                     <AssignmentForm
@@ -75,7 +94,10 @@ export const CourseView = () => {
             <div className="grid grid-cols-3 gap-4">
                 {columns.map((col) => {
                     return (
-                        <div className="col-span-1 flex flex-col gap-4">
+                        <div
+                            key={col.title}
+                            className="col-span-1 flex flex-col gap-4"
+                        >
                             <Typography variant="h2">
                                 {toTitleCase(col.title)}
                             </Typography>

@@ -8,17 +8,18 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { BASE_URL } from "@/config";
 
-export const AssignmentForm = ({
-    setShowAssignmentForm,
+export const LectureForm = ({
+    setShowLectureForm,
     courseId,
 }: {
-    setShowAssignmentForm: React.Dispatch<React.SetStateAction<boolean>>;
+    setShowLectureForm: React.Dispatch<React.SetStateAction<boolean>>;
     courseId: number;
 }) => {
     const [formData, setFormData] = useState({
-        type: "",
-        deadline: "",
-        is_group: false,
+        location: "",
+        date: "",
+        start_time: "",
+        end_time: "",
         is_obligatory: false,
     });
 
@@ -35,13 +36,13 @@ export const AssignmentForm = ({
 
     const handleSubmit = async () => {
         try {
-            fetch(`${BASE_URL}/courses/${courseId}/assignments`, {
+            fetch(`${BASE_URL}/courses/${courseId}/lectures`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(formData),
-            }).then(() => setShowAssignmentForm(false));
+            }).then(() => setShowLectureForm(false));
         } catch (e) {
             console.error("Error: " + e);
         }
@@ -55,28 +56,36 @@ export const AssignmentForm = ({
             <CardContent>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <Label htmlFor="type">Assignment type</Label>
-                        <Input
-                            type="text"
-                            name="type"
-                            value={formData.type}
-                            onChange={handleCreateFormInputChange}
-                            placeholder="Assignment type"
-                            required
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <Label htmlFor="type">Deadline</Label>
+                        <Label htmlFor="type">Date</Label>
                         <Input
                             type="date"
-                            name="deadline"
-                            value={formData.deadline}
+                            name="date"
+                            value={formData.date}
                             onChange={handleCreateFormInputChange}
                             required
                         />
                     </div>
-
-                    <div className="mb-4 flex flex-row gap-6 justify-center">
+                    <div className="mb-4 flex flex-row gap-6 justify-between">
+                        <div>
+                            <Label htmlFor="start_time">Start time</Label>
+                            <Input
+                                type="time"
+                                name="start_time"
+                                value={formData.start_time}
+                                onChange={handleCreateFormInputChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="end_time">End time</Label>
+                            <Input
+                                type="time"
+                                name="end_time"
+                                value={formData.end_time}
+                                onChange={handleCreateFormInputChange}
+                                required
+                            />
+                        </div>
                         <div>
                             <Label htmlFor="is_obligatory">Obligatory</Label>
                             <Input
@@ -86,23 +95,26 @@ export const AssignmentForm = ({
                                 onChange={handleCreateFormInputChange}
                             />
                         </div>
-                        <div>
-                            <Label htmlFor="is_group">Groupwork</Label>
-                            <Input
-                                type="checkbox"
-                                name="is_group"
-                                checked={formData.is_group}
-                                onChange={handleCreateFormInputChange}
-                            />
-                        </div>
                     </div>
+                    <div className="mb-4">
+                        <Label htmlFor="location">Location</Label>
+                        <Input
+                            type="text"
+                            name="location"
+                            value={formData.location}
+                            onChange={handleCreateFormInputChange}
+                            placeholder="Location"
+                            required
+                        />
+                    </div>
+
                     <Button type="submit" className="mb-4 w-full">
-                        Create Assignment
+                        Create Lecture
                     </Button>
                     <Button
                         type="button"
                         className="mb-4 w-full"
-                        onClick={() => setShowAssignmentForm(false)}
+                        onClick={() => setShowLectureForm(false)}
                     >
                         Cancel
                     </Button>
