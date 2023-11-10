@@ -17,6 +17,23 @@ export type Course = {
     course_link: string;
 };
 
+export type Assignment = {
+    id: number;
+    type: "exam" | "report";
+    deadline: Date;
+    is_obligatory: boolean;
+    is_group: boolean;
+};
+
+export type Lecture = {
+    id: number;
+    date: Date;
+    start_time: string;
+    end_time: string;
+    location: string;
+    is_obligatory: boolean;
+};
+
 export const coursesRouter = new Router({
     prefix: "/courses",
 });
@@ -26,23 +43,19 @@ coursesRouter.get("/:id", async (ctx, next) => {
 
     try {
         const course = await new Promise((resolve, reject) => {
-            db.get(
-                `SELECT * FROM courses WHERE id = ${id}`,
-                [],
-                (err, rows) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(rows);
-                    }
-                },
-            );
+            db.get(`SELECT * FROM courses WHERE id = ?`, [id], (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
         });
 
         const assignments = await new Promise((resolve, reject) => {
             db.all(
-                `SELECT * FROM assignments WHERE course_id = ${id} ORDER BY deadline ASC`,
-                [],
+                `SELECT * FROM assignments WHERE course_id = ? ORDER BY deadline ASC`,
+                [id],
                 (err, rows) => {
                     if (err) {
                         reject(err);
@@ -55,8 +68,8 @@ coursesRouter.get("/:id", async (ctx, next) => {
 
         const lectures = await new Promise((resolve, reject) => {
             db.all(
-                `SELECT * FROM lectures WHERE course_id = ${id} ORDER BY date ASC`,
-                [],
+                `SELECT * FROM lectures WHERE course_id = ? ORDER BY date ASC`,
+                [id],
                 (err, rows) => {
                     if (err) {
                         reject(err);
@@ -79,11 +92,10 @@ coursesRouter.get("/:id", async (ctx, next) => {
 
 coursesRouter.delete("/:id", async (ctx, _next) => {
     const { id } = ctx.params;
-    console.log("deleting");
 
     try {
         await new Promise<void>((resolve, reject) => {
-            db.run(`DELETE FROM courses WHERE id = ${id}`, [], (err) => {
+            db.run(`DELETE FROM courses WHERE id = ?`, [id], (err) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -116,23 +128,36 @@ coursesRouter.put("/:id", async (ctx, _next) => {
     } = ctx.request.body as Course;
 
     try {
-        await new Promise((_resolve, reject) => {
+        await new Promise<void>((resolve, reject) => {
             db.run(
                 `UPDATE courses SET
-            name = '${name}',
-            credits = ${credits},
-            status = '${status}',
-            notes = '${notes}',
-            start_date = '${start_date}',
-            end_date = '${end_date}',
-            responsible_teacher = '${responsible_teacher}',
-            location = '${location}',
-            course_link = '${course_link}'
-            WHERE id = ${id}`,
-                [],
+                name = $name,
+                credits = $credits,
+                status = $status,
+                notes = $notes,
+                start_date = $start_date,
+                end_date = $end_date,
+                responsible_teacher = $responsible_teacher,
+                location = $location,
+                course_link = $course_link
+            WHERE id = $id`,
+                {
+                    $name: name,
+                    $credits: credits,
+                    $status: status,
+                    $notes: notes,
+                    $start_date: start_date,
+                    $end_date: end_date,
+                    $responsible_teacher: responsible_teacher,
+                    $location: location,
+                    $course_link: course_link,
+                    $id: id,
+                },
                 (err) => {
                     if (err) {
                         reject(err);
+                    } else {
+                        resolve();
                     }
                 },
             );
@@ -147,57 +172,67 @@ coursesRouter.put("/:id", async (ctx, _next) => {
 coursesRouter.post("/:id/assignments", async (ctx) => {
     const { id } = ctx.params;
 
-    const { type, deadline, is_obligatory, is_group } = ctx.request.body as {
-        type: string;
-        deadline: Date;
-        is_obligatory: boolean;
-        is_group: boolean;
-    };
+    const { type, deadline, is_obligatory, is_group } = ctx.request
+        .body as Assignment;
 
-    db.run(
-        `INSERT INTO assignments (course_id, type, deadline, is_obligatory, is_group) VALUES
-    ('${id}', '${type}', '${deadline}', ${is_obligatory}, ${is_group})`,
-        (err) => {
-            if (err) {
-                console.error(
-                    "Error while inserting assignment into the database:",
-                    err,
-                );
-                ctx.body = { error: "Internal Server Error" };
-                ctx.response.status = 500;
-            } else {
-                ctx.response.status = 201;
-            }
-        },
-    );
+    try {
+        await new Promise<void>((resolve, reject) => {
+            db.run(
+                `INSERT INTO assignments (course_id, type, deadline, is_obligatory, is_group) VALUES (?, ?, ?, ?, ?)`,
+                [id, type, deadline, is_obligatory, is_group],
+                (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                },
+            );
+        });
+        ctx.response.status = 201;
+    } catch (error) {
+        console.error(
+            "Error while inserting assignment into the database:",
+            error,
+        );
+        ctx.body = { error: "Internal Server Error" };
+        ctx.response.status = 500;
+    }
 });
 
 coursesRouter.post("/:id/lectures", async (ctx) => {
     const { id } = ctx.params;
-
     const { date, start_time, end_time, location, is_obligatory } = ctx.request
-        .body as {
-        date: Date;
-        start_time: string;
-        end_time: string;
-        location: string;
-        is_obligatory: boolean;
-    };
+        .body as Lecture;
 
-    db.run(
-        `INSERT INTO lectures (course_id, date, start_time, end_time, location, is_obligatory) VALUES
-    ('${id}', '${date}', '${start_time}', '${end_time}', '${location}', ${is_obligatory})`,
-        (err) => {
-            if (err) {
-                console.error(
-                    "Error while inserting lecture into the database:",
-                    err,
-                );
-                ctx.body = { error: "Internal Server Error" };
-                ctx.response.status = 500;
-            } else {
-                ctx.response.status = 201;
-            }
-        },
-    );
+    try {
+        await new Promise<void>((resolve, reject) => {
+            db.run(
+                `INSERT INTO lectures (course_id, date, start_time, end_time, location, is_obligatory) VALUES (?, ?, ?, ?, ?, ?)`,
+                [
+                    id,
+                    date,
+                    start_time,
+                    end_time,
+                    location,
+                    is_obligatory
+                ],
+                (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                },
+            );
+        });
+        ctx.response.status = 201;
+    } catch (error) {
+        console.error(
+            "Error while inserting lecture into the database:",
+            error,
+        );
+        ctx.body = { error: "Internal Server Error" };
+        ctx.response.status = 500;
+    }
 });
