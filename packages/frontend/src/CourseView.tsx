@@ -76,7 +76,6 @@ export const CourseView = () => {
                         className="self-center"
                         onClick={() => {
                             setShowAssignmentForm(true);
-                            console.log(showAssignmentForm);
                         }}
                     >
                         <Plus />

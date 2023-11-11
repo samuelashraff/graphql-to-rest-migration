@@ -52,6 +52,20 @@ coursesRouter.get("/:id", async (ctx, next) => {
             });
         });
 
+        ctx.body = { course };
+        ctx.status = 200;
+    } catch (error) {
+        console.error("Error while querying the database:", error);
+        ctx.status = 500;
+        ctx.body = { error: "Internal Server Error" };
+    }
+    next();
+});
+
+coursesRouter.get("/:id/assignments", async (ctx, next) => {
+    const { id } = ctx.params;
+
+    try {
         const assignments = await new Promise((resolve, reject) => {
             db.all(
                 `SELECT * FROM assignments WHERE course_id = ? ORDER BY deadline ASC`,
@@ -66,6 +80,20 @@ coursesRouter.get("/:id", async (ctx, next) => {
             );
         });
 
+        ctx.body = { assignments };
+        ctx.status = 200;
+    } catch (error) {
+        console.error("Error while querying the database:", error);
+        ctx.status = 500;
+        ctx.body = { error: "Internal Server Error" };
+    }
+    next();
+});
+
+coursesRouter.get("/:id/lectures", async (ctx, next) => {
+    const { id } = ctx.params;
+
+    try {
         const lectures = await new Promise((resolve, reject) => {
             db.all(
                 `SELECT * FROM lectures WHERE course_id = ? ORDER BY date ASC`,
@@ -80,7 +108,7 @@ coursesRouter.get("/:id", async (ctx, next) => {
             );
         });
 
-        ctx.body = { course, assignments, lectures };
+        ctx.body = { lectures };
         ctx.status = 200;
     } catch (error) {
         console.error("Error while querying the database:", error);
@@ -209,14 +237,7 @@ coursesRouter.post("/:id/lectures", async (ctx) => {
         await new Promise<void>((resolve, reject) => {
             db.run(
                 `INSERT INTO lectures (course_id, date, start_time, end_time, location, is_obligatory) VALUES (?, ?, ?, ?, ?, ?)`,
-                [
-                    id,
-                    date,
-                    start_time,
-                    end_time,
-                    location,
-                    is_obligatory
-                ],
+                [id, date, start_time, end_time, location, is_obligatory],
                 (err) => {
                     if (err) {
                         reject(err);

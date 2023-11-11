@@ -27,10 +27,19 @@ const router = createBrowserRouter([
     {
         path: "/course/:id",
         loader: async ({ params }) => {
-            const data = await fetch(`${BASE_URL}/courses/${params.id}`).then(
-                (res) => res.json(),
-            );
-            return { ...data };
+            const [course, assignments, lectures] = await Promise.all([
+                fetch(`${BASE_URL}/courses/${params.id}`).then((res) =>
+                    res.json(),
+                ),
+                fetch(`${BASE_URL}/courses/${params.id}/assignments`).then(
+                    (res) => res.json(),
+                ),
+                fetch(`${BASE_URL}/courses/${params.id}/lectures`).then((res) =>
+                    res.json(),
+                ),
+            ]);
+
+            return { ...course, ...assignments, ...lectures };
         },
         element: (
             <Layout>
