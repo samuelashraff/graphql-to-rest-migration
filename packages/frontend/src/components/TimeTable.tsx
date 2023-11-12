@@ -1,12 +1,13 @@
 import { BASE_URL } from "@/config";
 import { useState, useEffect } from "react";
 
-type TimeTableItem = {
+type TimetableItem = {
     deadline: string;
     type: string;
     date: string;
     location: string;
     isObligatory: boolean;
+    daysUntilDeadline?: number;
 };
 
 // Helper function to calculate days until an event
@@ -18,12 +19,13 @@ function calculateDaysUntilEvent(eventDate: string): number {
     return daysUntilDeadline;
 }
 
-const Event = ({ item, index }: { item: TimeTableItem; index: number }) => {
+const Event = ({ item, index }: { item: TimetableItem; index: number }) => {
     const isAssignment = item.deadline ? true : false;
     const title = isAssignment ? "Assignment" : "Lecture";
-    const daysUntilEvent = isAssignment
-        ? calculateDaysUntilEvent(item.deadline)
-        : calculateDaysUntilEvent(item.date);
+
+    if (!item.daysUntilDeadline || item.daysUntilDeadline < 0) {
+        return null;
+    }
 
     return (
         <li key={index} className="border border-black rounded-md p-4 mt-4">
@@ -32,33 +34,46 @@ const Event = ({ item, index }: { item: TimeTableItem; index: number }) => {
                     {title} {index + 1}
                 </p>
                 <p>Deadline: {new Date(item.deadline).toLocaleDateString()}</p>
-                <p>({daysUntilEvent} days left)</p>
+                <p>({item.daysUntilDeadline} days left)</p>
             </>
         </li>
     );
 };
 
+function byDaysUntilEvent(a: TimetableItem, b: TimetableItem) {
+    return a.daysUntilDeadline! - b.daysUntilDeadline!;
+}
+
 export function Timetable() {
-    const [data, setData] = useState<TimeTableItem[]>([]);
+    const [data, setData] = useState<TimetableItem[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(`${BASE_URL}/timetable`);
-                const timeTableData = await response.json();
-                setData(timeTableData);
+                const timetableData = await response.json() as TimetableItem[];
+                const timetableDataWithTimeRemaining = timetableData.map((item) => {
+                    if (item.deadline) {
+                        const daysUntilDeadline = calculateDaysUntilEvent(item.deadline);
+                        return { ...item, daysUntilDeadline };
+                    } else {
+                        const daysUntilLecture = calculateDaysUntilEvent(item.date);
+                        return { ...item, daysUntilLecture };
+                    }
+                })
+                setData(timetableDataWithTimeRemaining);
             } catch (error) {
                 console.error("Error fetching timetable data" + error);
             }
         };
         fetchData();
-    }, [data]);
+    }, []);
 
     return (
         <div className="flex flex-col">
             <h1 className="text-2xl font-bold">Upcoming Events: </h1>
             <ul className="overflow-auto max-h-[50vh]">
-                {data.map((item, index) => (
+                {data.sort(byDaysUntilEvent).map((item, index) => (
                     <Event key={index} item={item} index={index} />
                 ))}
             </ul>

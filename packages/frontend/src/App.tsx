@@ -6,7 +6,7 @@ import CourseGrid from "@/components/CourseGrid";
 import { useLoaderData } from "react-router-dom";
 import { useState } from "react";
 import { Course } from "./types";
-import { TimeTable } from "./components/TimeTable";
+import { Timetable } from "./components/Timetable";
 
 function App() {
     const { courses } = useLoaderData() as { courses: Course[] };
@@ -29,7 +29,7 @@ function App() {
             </div>
             <div className=" border-l pl-4 ms-20"></div>
             <div className="ms-20 w-1/3">
-                <TimeTable />
+                <Timetable />
             </div>
         </div>
     );
