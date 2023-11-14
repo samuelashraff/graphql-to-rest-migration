@@ -29,3 +29,10 @@ INSERT INTO lectures (course_id, date, start_time, end_time, location, is_obliga
     (3, '2023-11-14', '11:00', '13:00', 'Lecture Hall C', 1),
     (4, '2023-11-10', '13:00', '15:00', 'Lecture Hall D', 1),
     (4, '2023-11-17', '13:00', '15:00', 'Lecture Hall D', 1);
+
+    
+-- Insert a dummy lecture
+INSERT INTO lectures (course_id, date, location, is_obligatory) VALUES (1, '2023-12-11', 'Room 102', 1);
+
+-- Insert a dummy assignment
+INSERT INTO assignments (course_id, type, is_group, deadline, is_obligatory) VALUES (1, 'exam', 0, '2023-12-15', 1);

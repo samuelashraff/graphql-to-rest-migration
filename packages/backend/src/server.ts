@@ -6,13 +6,8 @@ import {
     coursesRouter,
     lecturesRouter,
     assignmentsRouter,
+    timeTableRouter,
 } from "./routes";
-
-// routes: ADD THESE AS NEEDED
-// main (/) -> course list
-// course (/course/:id)
-// assignment (/assignment/:id)
-// lecture (/lecture/:id)
 
 const app = new Koa();
 
@@ -22,6 +17,7 @@ app.use(rootRouter.routes());
 app.use(coursesRouter.routes());
 app.use(assignmentsRouter.routes());
 app.use(lecturesRouter.routes());
+app.use(timeTableRouter.routes());
 
 const PORT = process.env.PORT || 4000;
 
