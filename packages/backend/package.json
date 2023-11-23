@@ -12,8 +12,10 @@
     "license": "ISC",
     "dependencies": {
         "@koa/cors": "^4.0.0",
+        "graphql": "^15.8.0",
         "koa": "^2.14.2",
         "koa-bodyparser": "^4.4.1",
+        "koa-graphql": "^0.12.0",
         "koa-router": "^11.0.2",
         "sqlite3": "^5.1.6"
     },
