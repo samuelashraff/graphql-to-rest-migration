@@ -34,3 +34,12 @@ export type Lecture = {
     location: string;
     is_obligatory: boolean;
 };
+
+export type TimetableItem = {
+    deadline: string;
+    type: string;
+    date: string;
+    location: string;
+    isObligatory: boolean;
+    daysUntilDeadline?: number;
+};

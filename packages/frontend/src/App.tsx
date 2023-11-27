@@ -5,11 +5,13 @@ import CourseGrid from "@/components/CourseGrid";
 
 import { useLoaderData } from "react-router-dom";
 import { useState } from "react";
-import { Course } from "./types";
-import { Timetable } from "./components/Timetable";
+import { Course, TimetableItem } from "./types";
+import { Timetable } from "./components/TimeTable";
 
 function App() {
-    const { courses } = useLoaderData() as { courses: Course[] };
+    const { courses, timetable } = useLoaderData() as { 
+        courses: Course[],
+        timetable: TimetableItem[] };
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
@@ -29,7 +31,7 @@ function App() {
             </div>
             <div className=" border-l pl-4 ms-20"></div>
             <div className="ms-20 w-1/3">
-                <Timetable />
+                <Timetable timetable={timetable}/>
             </div>
         </div>
     );
