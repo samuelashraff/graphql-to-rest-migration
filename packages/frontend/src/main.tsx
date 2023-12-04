@@ -30,14 +30,11 @@ const router = createBrowserRouter([
     {
         path: "/",
         loader: async () => {
-            const courses = (await fetch(BASE_URL).then((res) =>
-                res.json(),
-            )) as Course[];
-            const timetable = (await fetch(`${BASE_URL}/timetable`).then((res) => 
-                res.json(),
-            )) as TimetableItem[];
-
-            return { courses, timetable };
+            const [courses, timetable] = await Promise.all([
+                fetch(BASE_URL).then((res) => res.json()),
+                fetch(`${BASE_URL}/timetable`).then((res) => res.json()),
+            ]);
+            return { courses, timetable }
         },
         element: (
             <Layout>
