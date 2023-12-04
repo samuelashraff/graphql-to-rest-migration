@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import { CourseView } from "./CourseView.tsx";
-import { Course } from "./types/index.ts";
+import { Course, TimetableItem } from "./types/index.ts";
 import { Layout } from "./components/Layout.tsx";
 import { BASE_URL, GQL_ENDPOINT } from "./config.ts";
 
@@ -30,11 +30,11 @@ const router = createBrowserRouter([
     {
         path: "/",
         loader: async () => {
-            const courses = (await fetch(BASE_URL).then((res) =>
-                res.json(),
-            )) as Course[];
-
-            return { courses };
+            const [courses, timetable] = await Promise.all([
+                fetch(BASE_URL).then((res) => res.json()),
+                fetch(`${BASE_URL}/timetable`).then((res) => res.json()),
+            ]);
+            return { courses, timetable }
         },
         element: (
             <Layout>
