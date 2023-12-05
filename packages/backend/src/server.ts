@@ -7,9 +7,7 @@ import {
     lecturesRouter,
     assignmentsRouter,
     timeTableRouter,
-    gqlRouter,
 } from "./routes";
-
 
 const app = new Koa();
 
@@ -20,7 +18,6 @@ app.use(coursesRouter.routes());
 app.use(assignmentsRouter.routes());
 app.use(lecturesRouter.routes());
 app.use(timeTableRouter.routes());
-app.use(gqlRouter.routes());
 
 const PORT = process.env.PORT || 4000;
 
