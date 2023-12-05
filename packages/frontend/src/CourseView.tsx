@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { CourseDetailCard } from "./components/CourseDetails";
 import { Typography } from "./components/ui/typogrpahy";
-import {  GQLCourse } from "./types";
+import { Assignment, Course, Lecture } from "./types";
 import AssignmentCard from "./components/AssignmentCard";
 import LectureCard from "./components/LectureCard";
 import { Plus } from "lucide-react";
@@ -17,7 +17,11 @@ function toTitleCase(str: string) {
 }
 
 export const CourseView = () => {
-    const data = useLoaderData() as GQLCourse;
+    const data = useLoaderData() as {
+        course: Course;
+        assignments: Assignment[];
+        lectures: Lecture[];
+    };
     const [showAssignmentForm, setShowAssignmentForm] = useState(false);
     const [showLectureForm, setShowLectureForm] = useState(false);
 
@@ -25,7 +29,7 @@ export const CourseView = () => {
         {
             title: "details",
             elements: [
-                <CourseDetailCard key={data.id} course={data} />,
+                <CourseDetailCard key={data.course.id} course={data.course} />,
             ],
         },
         {
@@ -37,7 +41,7 @@ export const CourseView = () => {
                 showLectureForm ? (
                     <LectureForm
                         setShowLectureForm={setShowLectureForm}
-                        courseId={data.id}
+                        courseId={data.course.id}
                     />
                 ) : (
                     <Button
@@ -63,7 +67,7 @@ export const CourseView = () => {
                 showAssignmentForm ? (
                     <AssignmentForm
                         setShowAssignmentForm={setShowAssignmentForm}
-                        courseId={data.id}
+                        courseId={data.course.id}
                     />
                 ) : (
                     <Button
@@ -87,7 +91,7 @@ export const CourseView = () => {
                 <Button asChild className="self-center">
                     <a href="/">Back</a>
                 </Button>
-                <Typography variant="h1">{data.name}</Typography>
+                <Typography variant="h1">{data.course.name}</Typography>
             </div>
             <div className="grid md:grid-cols-3 gap-4 grid-cols-1">
                 {columns.map((col) => {
