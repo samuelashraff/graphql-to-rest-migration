@@ -38,20 +38,55 @@ export const coursesRouter = new Router({
     prefix: "/courses",
 });
 
-coursesRouter.get("/:id", async (ctx, next) => {
-    const { id } = ctx.params;
+export const getCourse = (id: string) => {
+    return new Promise((resolve, reject) => {
+        db.get(`SELECT * FROM courses WHERE id = ?`, [id], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+};
 
-    try {
-        const course = await new Promise((resolve, reject) => {
-            db.get(`SELECT * FROM courses WHERE id = ?`, [id], (err, rows) => {
+export const getAssignments = (courseId: string) => {
+    return new Promise((resolve, reject) => {
+        db.all(
+            `SELECT * FROM assignments WHERE course_id = ? ORDER BY deadline ASC`,
+            [courseId],
+            (err, rows) => {
                 if (err) {
                     reject(err);
                 } else {
                     resolve(rows);
                 }
-            });
-        });
+            },
+        );
+    });
+};
 
+export const getLectures = (courseId: string) => {
+    return new Promise((resolve, reject) => {
+        db.all(
+            `SELECT * FROM lectures WHERE course_id = ? ORDER BY date ASC`,
+            [courseId],
+            (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            },
+        );
+    });
+};
+
+coursesRouter.get("/:id", async (ctx, next) => {
+    const { id } = ctx.params;
+
+    try {
+        const course = await getCourse(id);
         ctx.body = { course };
         ctx.status = 200;
     } catch (error) {
@@ -66,20 +101,7 @@ coursesRouter.get("/:id/assignments", async (ctx, next) => {
     const { id } = ctx.params;
 
     try {
-        const assignments = await new Promise((resolve, reject) => {
-            db.all(
-                `SELECT * FROM assignments WHERE course_id = ? ORDER BY deadline ASC`,
-                [id],
-                (err, rows) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(rows);
-                    }
-                },
-            );
-        });
-
+        const assignments = await getAssignments(id);
         ctx.body = { assignments };
         ctx.status = 200;
     } catch (error) {
@@ -94,20 +116,7 @@ coursesRouter.get("/:id/lectures", async (ctx, next) => {
     const { id } = ctx.params;
 
     try {
-        const lectures = await new Promise((resolve, reject) => {
-            db.all(
-                `SELECT * FROM lectures WHERE course_id = ? ORDER BY date ASC`,
-                [id],
-                (err, rows) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(rows);
-                    }
-                },
-            );
-        });
-
+        const lectures = await getLectures(id);
         ctx.body = { lectures };
         ctx.status = 200;
     } catch (error) {
