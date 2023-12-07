@@ -2,9 +2,24 @@ import React, { useState } from "react";
 import ReactModal from "react-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BASE_URL } from "@/config";
+import { GQL_ENDPOINT } from "@/config";
 
 ReactModal.setAppElement("#root");
+
+const graphQLCreateCourse = async (query: string) => {
+    try {
+        fetch(GQL_ENDPOINT, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: JSON.stringify({ query }),
+        }).then((response) => response.json())
+    } catch (error) {
+        console.error("Error making GraphQL query:", error);
+    }
+};
 
 export function CreateCourseModal({
     isOpen,
@@ -28,18 +43,25 @@ export function CreateCourseModal({
     };
 
     const handleSubmit = async () => {
-        try {
-            fetch(BASE_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            }).then((response) => response.json());
-        } catch (e) {
-            console.error("Error: " + e);
-        }
-    };
+        const graphqlMutation = `
+            mutation {
+                createCourse(
+                    name: "${formData.name}",
+                    status: "${formData.status}",
+                    startDate: "${formData.startDate}",
+                    endDate: "${formData.endDate}"
+                ) {
+                id
+                name
+                status
+                start_date
+                end_date
+                }
+            }
+            `;
+        await graphQLCreateCourse(graphqlMutation);
+    }
+
 
     return (
         <ReactModal
