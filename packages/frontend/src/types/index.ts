@@ -18,8 +18,6 @@ export type Course = {
     course_link: string;
 };
 
-export type GQLCourse = Course & { assignments: Assignment[]; lectures: Lecture[] };
-
 export type Assignment = {
     id: number;
     type: "exam" | "report";
