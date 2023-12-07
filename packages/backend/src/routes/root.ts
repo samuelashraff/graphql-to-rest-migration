@@ -3,6 +3,30 @@ import { getDbInstance } from "../database/db";
 
 const db = getDbInstance();
 
+export const createCourse = async (args: any) => {
+    const { name, status, startDate, endDate } = args as {
+        name: string,
+        status: string,
+        startDate: string,
+        endDate: string
+    }
+
+    return new Promise((resolve, reject) => {
+        db.run(
+            `INSERT INTO courses (name, status, start_date, end_date) VALUES
+        ('${name}', '${status}', ${startDate}, ${endDate})`,
+            function (this, err) {
+                if (err) {
+                    reject(err)
+                }
+                else {
+                    resolve(this.lastID)
+                }
+            },
+        );
+    });
+};
+
 export const rootRouter = new Router({
     prefix: "/",
 });

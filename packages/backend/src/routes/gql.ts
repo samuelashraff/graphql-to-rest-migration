@@ -9,6 +9,7 @@ import {
 import { graphqlHTTP } from "koa-graphql";
 import Router from "koa-router";
 import { getAssignments, getCourse, getLectures } from "./courses";
+import { createCourse } from "./root"
 
 export const gqlRouter = new Router();
 
@@ -96,6 +97,29 @@ const schema = new GraphQLSchema({
                             error,
                         );
                         throw new Error("Internal Server Error");
+                    }
+                },
+            },
+        },
+    }),
+    mutation: new GraphQLObjectType({
+        name: "CreateCourseMutationType",
+        fields: {
+            createCourse: {
+                type: CourseType,
+                args: {
+                    name: { type: GraphQLString },
+                    status: { type: GraphQLString },
+                    startDate: { type: GraphQLString },
+                    endDate: { type: GraphQLString },
+                },
+                resolve: async (_, args) => {
+                    try {
+                        await createCourse(args);
+                        return { success: true, message: "Course created successfully" };
+                    } catch (error) {
+                        console.error("Error creating course:", error);
+                        throw new Error("Failed to create course");
                     }
                 },
             },
