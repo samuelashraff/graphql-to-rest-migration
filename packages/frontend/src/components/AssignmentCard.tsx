@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Trash } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Assignment } from "@/types";
-import { BASE_URL } from "@/config";
+import { makeGraphQLQuery } from "@/main";
 
 function toTitleCase(str: string) {
     return str.replace(/\w\S*/g, function (txt) {
@@ -21,10 +21,15 @@ const AssignmentCard: React.FC<{ assignment: Assignment }> = ({
     const revalidator = useRevalidator();
 
     const deleteAssignment = async () => {
+        const graphqlMutation = `
+            mutation {
+                deleteAssignment(
+                    id: ${assignment.id}                
+                )                
+            }
+            `;
         try {
-            await fetch(`${BASE_URL}/assignments/${assignment.id}`, {
-                method: "DELETE",
-            }).then(() => {
+            await makeGraphQLQuery(graphqlMutation).then(() => {
                 revalidator.revalidate();
             });
         } catch (error) {

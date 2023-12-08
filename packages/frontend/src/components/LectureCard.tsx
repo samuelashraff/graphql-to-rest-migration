@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useRevalidator } from "react-router-dom";
 
-import { BASE_URL } from "@/config";
 import { Trash } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Lecture } from "@/types";
+import { makeGraphQLQuery } from "@/main";
 
 const LectureCard: React.FC<{ lecture: Lecture }> = ({ lecture }) => {
     const [showOptions, setShowOptions] = useState(false);
@@ -13,10 +13,15 @@ const LectureCard: React.FC<{ lecture: Lecture }> = ({ lecture }) => {
     const revalidator = useRevalidator();
 
     const deleteAssignment = async () => {
+        const graphqlMutation = `
+        mutation {
+            deleteLecture(
+                id: ${lecture.id}                
+            )                
+        }
+        `;
         try {
-            await fetch(`${BASE_URL}/lectures/${lecture.id}`, {
-                method: "DELETE",
-            }).then(() => {
+            await makeGraphQLQuery(graphqlMutation).then(() => {
                 revalidator.revalidate();
             });
         } catch (error) {

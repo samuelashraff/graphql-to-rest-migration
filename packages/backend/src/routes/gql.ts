@@ -15,8 +15,11 @@ import {
     getCourses,
     getLectures,
     createCourse,
+    deleteCourseById,
 } from "./courses";
 import { getUpcomingEvents } from "./timetable";
+import { deleteAssignmentById } from "./assignments";
+import { deleteLectureById } from "./lectures";
 
 export const gqlRouter = new Router();
 
@@ -149,7 +152,7 @@ const schema = new GraphQLSchema({
         },
     }),
     mutation: new GraphQLObjectType({
-        name: "CreateCourseMutationType",
+        name: "RootMutationType",
         fields: {
             createCourse: {
                 type: CourseType,
@@ -169,6 +172,51 @@ const schema = new GraphQLSchema({
                     } catch (error) {
                         console.error("Error creating course:", error);
                         throw new Error("Failed to create course");
+                    }
+                },
+            },
+            deleteCourse: {
+                type: GraphQLBoolean,
+                args: {
+                    id: { type: GraphQLInt },
+                },
+                resolve: async (_, args) => {
+                    try {
+                        await deleteCourseById(args.id);
+                        return true;
+                    } catch (error) {
+                        console.error("Error deleting course:", error);
+                        throw new Error("Failed to delete course");
+                    }
+                },
+            },
+            deleteLecture: {
+                type: GraphQLBoolean,
+                args: {
+                    id: { type: GraphQLInt },
+                },
+                resolve: async (_, args) => {
+                    try {
+                        await deleteLectureById(args.id);
+                        return true;
+                    } catch (error) {
+                        console.error("Error deleting course:", error);
+                        throw new Error("Failed to delete course");
+                    }
+                },
+            },
+            deleteAssignment: {
+                type: GraphQLBoolean,
+                args: {
+                    id: { type: GraphQLInt },
+                },
+                resolve: async (_, args) => {
+                    try {
+                        await deleteAssignmentById(args.id);
+                        return true;
+                    } catch (error) {
+                        console.error("Error deleting assignment:", error);
+                        throw new Error("Failed to delete assignment");
                     }
                 },
             },

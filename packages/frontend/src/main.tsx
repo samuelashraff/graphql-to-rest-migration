@@ -7,7 +7,7 @@ import { CourseView } from "./CourseView.tsx";
 import { Layout } from "./components/Layout.tsx";
 import { GQL_ENDPOINT } from "./config.ts";
 
-const makeGraphQLQuery = async (query: string) => {
+export const makeGraphQLQuery = async (query: string) => {
     try {
         const response = await fetch(GQL_ENDPOINT, {
             method: "POST",

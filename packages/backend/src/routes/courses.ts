@@ -117,28 +117,17 @@ export const createCourse = async (args: any) => {
     });
 };
 
-coursesRouter.delete("/:id", async (ctx, _next) => {
-    const { id } = ctx.params;
-
-    try {
-        await new Promise<void>((resolve, reject) => {
-            db.run(`DELETE FROM courses WHERE id = ?`, [id], (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
+export const deleteCourseById = async (id: number) => {
+    await new Promise<void>((resolve, reject) => {
+        db.run(`DELETE FROM courses WHERE id = ?`, [id], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
         });
-
-        console.log("Course deleted from database");
-        ctx.status = 200;
-    } catch (error) {
-        console.error("Error while deleting course from database");
-        ctx.status = 500;
-        ctx.body = { error: "Internal Server Error" };
-    }
-});
+    });
+};
 
 coursesRouter.put("/:id", async (ctx, _next) => {
     const { id } = ctx.params;

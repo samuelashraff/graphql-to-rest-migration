@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { CardContent, Card } from "./ui/card";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
+import { makeGraphQLQuery } from "@/main";
 
 const CourseDetailEditForm = ({
     course,
@@ -126,18 +127,19 @@ export const CourseDetailCard = ({ course }: { course: Course }) => {
         );
         if (!shouldDelete) return;
 
-        try {
-            console.log("deleting");
-            fetch(`${BASE_URL}/courses/${course.id}`, {
-                method: "DELETE",
-            }).then(() => {
-                console.log("here");
+        const graphqlMutation = `
+            mutation {
+                deleteCourse(
+                    id: ${course.id}                
+                )                
+            }
+            `;
+
+        makeGraphQLQuery(graphqlMutation)
+            .then(() => {
                 navigate("/", { replace: true });
-            });
-            console.log("navigating");
-        } catch (error) {
-            console.error("Error: ", error);
-        }
+            })
+            .catch((err) => console.error("Error: ", err));
     };
 
     return (
