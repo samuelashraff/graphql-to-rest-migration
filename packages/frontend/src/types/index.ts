@@ -18,7 +18,10 @@ export type Course = {
     course_link: string;
 };
 
-export type GQLCourse = Course & { assignments: Assignment[]; lectures: Lecture[] };
+export type GQLCourse = Course & {
+    assignments: Assignment[];
+    lectures: Lecture[];
+};
 
 export type Assignment = {
     id: number;
@@ -43,5 +46,4 @@ export type TimetableItem = {
     date: string;
     location: string;
     isObligatory: boolean;
-    daysUntilDeadline?: number;
 };

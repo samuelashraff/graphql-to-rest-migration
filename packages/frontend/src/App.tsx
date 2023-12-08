@@ -9,9 +9,10 @@ import { Course, TimetableItem } from "./types";
 import { Timetable } from "./components/TimeTable";
 
 function App() {
-    const { courses, timetable } = useLoaderData() as { 
-        courses: Course[],
-        timetable: TimetableItem[] };
+    const { courses, upcomingEvents } = useLoaderData() as {
+        courses: Course[];
+        upcomingEvents: TimetableItem[];
+    };
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
@@ -31,7 +32,7 @@ function App() {
             </div>
             <div className=" border-l pl-4 ms-20"></div>
             <div className="ms-20 w-1/3">
-                <Timetable timetable={timetable}/>
+                <Timetable timetable={upcomingEvents} />
             </div>
         </div>
     );

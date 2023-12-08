@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import { CourseView } from "./CourseView.tsx";
 import { Layout } from "./components/Layout.tsx";
-import { BASE_URL, GQL_ENDPOINT } from "./config.ts";
+import { GQL_ENDPOINT } from "./config.ts";
 
 const makeGraphQLQuery = async (query: string) => {
     try {
@@ -29,11 +29,22 @@ const router = createBrowserRouter([
     {
         path: "/",
         loader: async () => {
-            const [courses, timetable] = await Promise.all([
-                fetch(BASE_URL).then((res) => res.json()),
-                fetch(`${BASE_URL}/timetable`).then((res) => res.json()),
-            ]);
-            return { courses, timetable };
+            const graphqlQuery = `
+            query {
+                courses {
+                    id
+                    name
+                    credits
+                    status
+                  },
+                  upcomingEvents {
+                    ... on LectureType {id, date, location }
+                    ... on AssignmentType {id, deadline}
+                  }
+            }
+          `;
+            const data = await makeGraphQLQuery(graphqlQuery);
+            return data;
         },
         element: (
             <Layout>

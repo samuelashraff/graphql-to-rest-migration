@@ -44,12 +44,17 @@ const CourseGrid: React.FC<{
         <div className="grid grid-cols-3 gap-4">
             {statuses.map((status) => {
                 return (
-                    <div className="col-span-1 flex flex-col gap-4">
+                    <div
+                        className="col-span-1 flex flex-col gap-4"
+                        key={status}
+                    >
                         <Typography variant="h2">
                             {toTitleCase(status)}
                         </Typography>
                         {groupedCourses[status]?.map((course) => {
-                            return <CourseCard course={course} />;
+                            return (
+                                <CourseCard course={course} key={course.id} />
+                            );
                         })}
                     </div>
                 );
