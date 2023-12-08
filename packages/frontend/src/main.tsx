@@ -4,7 +4,6 @@ import App from "./App.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import { CourseView } from "./CourseView.tsx";
-import { Course, TimetableItem } from "./types/index.ts";
 import { Layout } from "./components/Layout.tsx";
 import { BASE_URL, GQL_ENDPOINT } from "./config.ts";
 
@@ -34,7 +33,7 @@ const router = createBrowserRouter([
                 fetch(BASE_URL).then((res) => res.json()),
                 fetch(`${BASE_URL}/timetable`).then((res) => res.json()),
             ]);
-            return { courses, timetable }
+            return { courses, timetable };
         },
         element: (
             <Layout>
