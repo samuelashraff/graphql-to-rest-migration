@@ -15,6 +15,7 @@ import {
     getCourses,
     getLectures,
     createCourse,
+    deleteCourseById,
 } from "./courses";
 import { getUpcomingEvents } from "./timetable";
 
@@ -169,6 +170,21 @@ const schema = new GraphQLSchema({
                     } catch (error) {
                         console.error("Error creating course:", error);
                         throw new Error("Failed to create course");
+                    }
+                },
+            },
+            deleteCourse: {
+                type: GraphQLBoolean,
+                args: {
+                    id: { type: GraphQLInt },
+                },
+                resolve: async (_, args) => {
+                    try {
+                        await deleteCourseById(args.id);
+                        return true; // Successfully deleted
+                    } catch (error) {
+                        console.error("Error deleting course:", error);
+                        throw new Error("Failed to delete course");
                     }
                 },
             },
