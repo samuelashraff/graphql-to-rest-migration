@@ -39,7 +39,7 @@ const router = createBrowserRouter([
                   },
                   upcomingEvents {
                     ... on LectureType {id, date, location }
-                    ... on AssignmentType {id, deadline}
+                    ... on AssignmentType {id, deadline, type}
                   }
             }
           `;

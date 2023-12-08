@@ -2,7 +2,9 @@ import { TimetableItem } from "@/types";
 
 const Event = ({ item, index }: { item: TimetableItem; index: number }) => {
     const isAssignment = item.deadline;
-    const title = isAssignment ? "Assignment" : "Lecture";
+    const title = isAssignment
+        ? item.type[0].toUpperCase() + item.type.substring(1)
+        : "Lecture";
 
     return (
         <li key={index} className="border border-black rounded-md p-4 mt-4">
