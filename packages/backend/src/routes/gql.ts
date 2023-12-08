@@ -5,11 +5,13 @@ import {
     GraphQLObjectType,
     GraphQLSchema,
     GraphQLString,
+    GraphQLUnionType,
 } from "graphql";
 import { graphqlHTTP } from "koa-graphql";
 import Router from "koa-router";
-import { getAssignments, getCourse, getLectures } from "./courses";
-import { createCourse } from "./root"
+import { getAssignments, getCourse, getCourses, getLectures } from "./courses";
+import { createCourse } from "./root";
+import { getUpcomingEvents } from "./timetable";
 
 export const gqlRouter = new Router();
 
@@ -79,6 +81,20 @@ const LectureType = new GraphQLObjectType({
     },
 });
 
+const UpcomingEvent = new GraphQLUnionType({
+    name: "UpcomingEventType",
+    types: [AssignmentType, LectureType],
+    resolveType(value) {
+        if (value.deadline) {
+            return AssignmentType;
+        } else if (value.date) {
+            return LectureType;
+        }
+        // If the type cannot be determined, you can return null or throw an error.
+        return null;
+    },
+});
+
 const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "RootQueryType",
@@ -100,6 +116,28 @@ const schema = new GraphQLSchema({
                     }
                 },
             },
+            courses: {
+                type: new GraphQLList(CourseType),
+                resolve: async () => {
+                    try {
+                        return await getCourses();
+                    } catch (error) {
+                        console.error("Error while querying courses:", error);
+                        throw new Error("Internal Server Error");
+                    }
+                },
+            },
+            upcomingEvents: {
+                type: new GraphQLList(UpcomingEvent),
+                resolve: async () => {
+                    try {
+                        return await getUpcomingEvents();
+                    } catch (error) {
+                        console.error("Error while querying courses:", error);
+                        throw new Error("Internal Server Error");
+                    }
+                },
+            },
         },
     }),
     mutation: new GraphQLObjectType({
@@ -116,7 +154,10 @@ const schema = new GraphQLSchema({
                 resolve: async (_, args) => {
                     try {
                         await createCourse(args);
-                        return { success: true, message: "Course created successfully" };
+                        return {
+                            success: true,
+                            message: "Course created successfully",
+                        };
                     } catch (error) {
                         console.error("Error creating course:", error);
                         throw new Error("Failed to create course");

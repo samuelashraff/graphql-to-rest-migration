@@ -1,15 +1,16 @@
 import Router from "koa-router";
 import { getDbInstance } from "../database/db";
+import { getCourses } from "./courses";
 
 const db = getDbInstance();
 
 export const createCourse = async (args: any) => {
     const { name, status, startDate, endDate } = args as {
-        name: string,
-        status: string,
-        startDate: string,
-        endDate: string
-    }
+        name: string;
+        status: string;
+        startDate: string;
+        endDate: string;
+    };
 
     return new Promise((resolve, reject) => {
         db.run(
@@ -17,10 +18,9 @@ export const createCourse = async (args: any) => {
         ('${name}', '${status}', ${startDate}, ${endDate})`,
             function (this, err) {
                 if (err) {
-                    reject(err)
-                }
-                else {
-                    resolve(this.lastID)
+                    reject(err);
+                } else {
+                    resolve(this.lastID);
                 }
             },
         );
@@ -33,16 +33,7 @@ export const rootRouter = new Router({
 
 rootRouter.get("/", async (ctx, next) => {
     try {
-        const rows = await new Promise((resolve, reject) => {
-            db.all(`SELECT * FROM courses`, [], (err, rows) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(rows);
-                }
-            });
-        });
-
+        const rows = await getCourses();
         ctx.body = rows;
         ctx.status = 200;
     } catch (error) {

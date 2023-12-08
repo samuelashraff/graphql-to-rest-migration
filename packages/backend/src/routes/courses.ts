@@ -38,6 +38,18 @@ export const coursesRouter = new Router({
     prefix: "/courses",
 });
 
+export const getCourses = () => {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM courses`, [], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+};
+
 export const getCourse = (id: string) => {
     return new Promise((resolve, reject) => {
         db.get(`SELECT * FROM courses WHERE id = ?`, [id], (err, row) => {
