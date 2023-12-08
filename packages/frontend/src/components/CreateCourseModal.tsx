@@ -2,24 +2,9 @@ import React, { useState } from "react";
 import ReactModal from "react-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { GQL_ENDPOINT } from "@/config";
+import { makeGraphQLQuery } from "@/main";
 
 ReactModal.setAppElement("#root");
-
-const graphQLCreateCourse = async (query: string) => {
-    try {
-        fetch(GQL_ENDPOINT, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            },
-            body: JSON.stringify({ query }),
-        }).then((response) => response.json())
-    } catch (error) {
-        console.error("Error making GraphQL query:", error);
-    }
-};
 
 export function CreateCourseModal({
     isOpen,
@@ -59,9 +44,8 @@ export function CreateCourseModal({
                 }
             }
             `;
-        await graphQLCreateCourse(graphqlMutation);
-    }
-
+        await makeGraphQLQuery(graphqlMutation);
+    };
 
     return (
         <ReactModal
