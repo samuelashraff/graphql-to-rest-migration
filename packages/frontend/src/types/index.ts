@@ -18,6 +18,7 @@ export type Course = {
     course_link: string;
 };
 
+
 export type Assignment = {
     id: number;
     type: "exam" | "report";
@@ -41,5 +42,4 @@ export type TimetableItem = {
     date: string;
     location: string;
     isObligatory: boolean;
-    daysUntilDeadline?: number;
 };

@@ -17,27 +17,37 @@ export const timeTableRouter = new Router({
 
 timeTableRouter.get("/", async (ctx, next) => {
     try {
-        const assignments: TimetableItem[] = await new Promise((resolve, reject) => {
-            db.all(`SELECT deadline, type FROM assignments`, [], (err, rows) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(rows as TimetableItem[]);
-                }
-            });
-        });
+        const assignments: TimetableItem[] = await new Promise(
+            (resolve, reject) => {
+                db.all(
+                    `SELECT deadline, type FROM assignments WHERE deadline >= DATE('now')`,
+                    [],
+                    (err, rows) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(rows as TimetableItem[]);
+                        }
+                    },
+                );
+            },
+        );
 
-        const lectures: TimetableItem[] = await new Promise((resolve, reject) => {
-            db.all(`SELECT date, location, is_obligatory FROM lectures`, [], (err, rows) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(rows as TimetableItem[]);
-                }
-            });
-        });
-
-        const now = new Date();
+        const lectures: TimetableItem[] = await new Promise(
+            (resolve, reject) => {
+                db.all(
+                    `SELECT date, location, is_obligatory FROM lectures WHERE date >= DATE('now')`,
+                    [],
+                    (err, rows) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(rows as TimetableItem[]);
+                        }
+                    },
+                );
+            },
+        );
 
         // Combine assignments and lectures
         const timetableData: TimetableItem[] = [...assignments, ...lectures];
@@ -50,12 +60,7 @@ timeTableRouter.get("/", async (ctx, next) => {
             return dateA.valueOf() - dateB.valueOf();
         });
 
-        // Filter out items with a deadline in the past
-        const upcomingItems = timetableData.filter(item => {
-            return !item.deadline || new Date(item.deadline) >= now;
-        });
-
-        ctx.body = upcomingItems;
+        ctx.body = timetableData;
         ctx.status = 200;
     } catch (error) {
         console.error("Error while querying the database:", error);
