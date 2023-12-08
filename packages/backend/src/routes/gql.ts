@@ -9,8 +9,13 @@ import {
 } from "graphql";
 import { graphqlHTTP } from "koa-graphql";
 import Router from "koa-router";
-import { getAssignments, getCourse, getCourses, getLectures } from "./courses";
-import { createCourse } from "./root";
+import {
+    getAssignments,
+    getCourse,
+    getCourses,
+    getLectures,
+    createCourse,
+} from "./courses";
 import { getUpcomingEvents } from "./timetable";
 
 export const gqlRouter = new Router();
@@ -133,7 +138,10 @@ const schema = new GraphQLSchema({
                     try {
                         return await getUpcomingEvents();
                     } catch (error) {
-                        console.error("Error while querying courses:", error);
+                        console.error(
+                            "Error while querying upcoming events:",
+                            error,
+                        );
                         throw new Error("Internal Server Error");
                     }
                 },

@@ -94,50 +94,28 @@ export const getLectures = (courseId: string) => {
     });
 };
 
-coursesRouter.get("/:id", async (ctx, next) => {
-    const { id } = ctx.params;
+export const createCourse = async (args: any) => {
+    const { name, status, startDate, endDate } = args as {
+        name: string;
+        status: string;
+        startDate: string;
+        endDate: string;
+    };
 
-    try {
-        const course = await getCourse(id);
-        ctx.body = { course };
-        ctx.status = 200;
-    } catch (error) {
-        console.error("Error while querying the database:", error);
-        ctx.status = 500;
-        ctx.body = { error: "Internal Server Error" };
-    }
-    next();
-});
-
-coursesRouter.get("/:id/assignments", async (ctx, next) => {
-    const { id } = ctx.params;
-
-    try {
-        const assignments = await getAssignments(id);
-        ctx.body = { assignments };
-        ctx.status = 200;
-    } catch (error) {
-        console.error("Error while querying the database:", error);
-        ctx.status = 500;
-        ctx.body = { error: "Internal Server Error" };
-    }
-    next();
-});
-
-coursesRouter.get("/:id/lectures", async (ctx, next) => {
-    const { id } = ctx.params;
-
-    try {
-        const lectures = await getLectures(id);
-        ctx.body = { lectures };
-        ctx.status = 200;
-    } catch (error) {
-        console.error("Error while querying the database:", error);
-        ctx.status = 500;
-        ctx.body = { error: "Internal Server Error" };
-    }
-    next();
-});
+    return new Promise((resolve, reject) => {
+        db.run(
+            `INSERT INTO courses (name, status, start_date, end_date) VALUES
+        ('${name}', '${status}', ${startDate}, ${endDate})`,
+            function (this, err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(this.lastID);
+                }
+            },
+        );
+    });
+};
 
 coursesRouter.delete("/:id", async (ctx, _next) => {
     const { id } = ctx.params;
