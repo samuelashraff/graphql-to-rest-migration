@@ -22,9 +22,7 @@ import {
 } from "./resolvers";
 import { CourseType, UpcomingEvent, ResponseType } from "./types";
 
-export const gqlRouter = new Router();
-
-const schema = new GraphQLSchema({
+export const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "RootQueryType",
         fields: {
@@ -221,11 +219,3 @@ const schema = new GraphQLSchema({
         },
     }),
 });
-
-gqlRouter.all(
-    "/graphql",
-    graphqlHTTP({
-        schema,
-        graphiql: true,
-    }),
-);
