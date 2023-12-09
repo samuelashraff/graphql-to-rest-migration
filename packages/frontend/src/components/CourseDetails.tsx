@@ -1,4 +1,3 @@
-import { BASE_URL } from "@/config";
 import { Course } from "@/types";
 import { Label } from "@radix-ui/react-label";
 import { Trash, Edit } from "lucide-react";
@@ -27,18 +26,19 @@ const CourseDetailEditForm = ({
         initialCourseDetails,
     );
     const saveCourseChanges = async () => {
-        try {
-            await fetch(`${BASE_URL}/courses/${course.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(courseDetailEdits),
-            });
-            setIsEditMode(false);
-        } catch (error) {
-            console.error("Error: ", error);
-        }
+        const graphqlMutation = `
+            mutation {
+                updateCourse(
+                  id: ${courseDetailEdits.id}
+                  status: "${courseDetailEdits.status}"
+                  location: "${courseDetailEdits.location}"
+                  responsible_teacher: "${courseDetailEdits.responsible_teacher}"
+                  credits: ${courseDetailEdits.credits}
+                ) {
+                  success
+                }
+            }`;
+        makeGraphQLQuery(graphqlMutation).then(() => setIsEditMode(false));
     };
 
     const cancelEdit = () => {

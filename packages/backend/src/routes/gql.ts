@@ -16,12 +16,21 @@ import {
     getLectures,
     createCourse,
     deleteCourseById,
+    updateCourse,
 } from "./courses";
 import { getUpcomingEvents } from "./timetable";
 import { deleteAssignmentById } from "./assignments";
 import { deleteLectureById } from "./lectures";
 
 export const gqlRouter = new Router();
+
+const ResponseType = new GraphQLObjectType({
+    name: "ResponseType",
+    fields: () => ({
+        success: { type: GraphQLBoolean },
+        message: { type: GraphQLString },
+    }),
+});
 
 const CourseType = new GraphQLObjectType({
     name: "CourseType",
@@ -155,7 +164,7 @@ const schema = new GraphQLSchema({
         name: "RootMutationType",
         fields: {
             createCourse: {
-                type: CourseType,
+                type: ResponseType,
                 args: {
                     name: { type: GraphQLString },
                     status: { type: GraphQLString },
@@ -175,15 +184,41 @@ const schema = new GraphQLSchema({
                     }
                 },
             },
+            updateCourse: {
+                type: ResponseType,
+                args: {
+                    id: { type: GraphQLInt },
+                    credits: { type: GraphQLInt },
+                    status: { type: GraphQLString },
+                    location: { type: GraphQLString },
+                    responsible_teacher: { type: GraphQLString },
+                },
+                resolve: async (_, args) => {
+                    try {
+                        console.log("hi");
+                        await updateCourse(args);
+                        return {
+                            success: true,
+                            message: "Course updated successfully",
+                        };
+                    } catch (error) {
+                        console.error("Error updating course:", error);
+                        throw new Error("Failed to update course");
+                    }
+                },
+            },
             deleteCourse: {
-                type: GraphQLBoolean,
+                type: ResponseType,
                 args: {
                     id: { type: GraphQLInt },
                 },
                 resolve: async (_, args) => {
                     try {
                         await deleteCourseById(args.id);
-                        return true;
+                        return {
+                            success: true,
+                            message: "Course deleted successfully",
+                        };
                     } catch (error) {
                         console.error("Error deleting course:", error);
                         throw new Error("Failed to delete course");
@@ -198,7 +233,10 @@ const schema = new GraphQLSchema({
                 resolve: async (_, args) => {
                     try {
                         await deleteLectureById(args.id);
-                        return true;
+                        return {
+                            success: true,
+                            message: "Lecture deleted successfully",
+                        };
                     } catch (error) {
                         console.error("Error deleting course:", error);
                         throw new Error("Failed to delete course");
@@ -213,7 +251,10 @@ const schema = new GraphQLSchema({
                 resolve: async (_, args) => {
                     try {
                         await deleteAssignmentById(args.id);
-                        return true;
+                        return {
+                            success: true,
+                            message: "Assignment deleted successfully",
+                        };
                     } catch (error) {
                         console.error("Error deleting assignment:", error);
                         throw new Error("Failed to delete assignment");

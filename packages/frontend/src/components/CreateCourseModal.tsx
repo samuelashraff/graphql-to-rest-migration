@@ -36,11 +36,7 @@ export function CreateCourseModal({
                     startDate: "${formData.startDate}",
                     endDate: "${formData.endDate}"
                 ) {
-                id
-                name
-                status
-                start_date
-                end_date
+                success
                 }
             }
             `;
