@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { CourseDetailCard } from "./components/CourseDetails";
 import { Typography } from "./components/ui/typogrpahy";
-import {  GQLCourse } from "./types";
+import { GQLCourse } from "./types";
 import AssignmentCard from "./components/AssignmentCard";
 import LectureCard from "./components/LectureCard";
 import { Plus } from "lucide-react";
@@ -9,6 +9,7 @@ import { Button } from "./components/ui/button";
 import { useState } from "react";
 import { AssignmentForm } from "./components/AssignmentForm";
 import { LectureForm } from "./components/LectureForm";
+import { Link } from "react-router-dom";
 
 function toTitleCase(str: string) {
     return str.replace(/\w\S*/g, function (txt) {
@@ -24,9 +25,7 @@ export const CourseView = () => {
     const columns = [
         {
             title: "details",
-            elements: [
-                <CourseDetailCard key={data.id} course={data} />,
-            ],
+            elements: [<CourseDetailCard key={data.id} course={data} />],
         },
         {
             title: "lectures",
@@ -85,7 +84,7 @@ export const CourseView = () => {
         <div className="flex flex-col gap-10 flex-grow">
             <div className="flex gap-10">
                 <Button asChild className="self-center">
-                    <a href="/">Back</a>
+                    <Link to={"/"}>Back</Link>
                 </Button>
                 <Typography variant="h1">{data.name}</Typography>
             </div>
