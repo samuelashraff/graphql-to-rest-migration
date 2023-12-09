@@ -2,7 +2,7 @@ import { Course } from "@/types";
 import { Label } from "@radix-ui/react-label";
 import { Trash, Edit } from "lucide-react";
 import { useReducer, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useRevalidator } from "react-router-dom";
 import { Button } from "./ui/button";
 import { CardContent, Card } from "./ui/card";
 import { Input } from "./ui/input";
@@ -16,6 +16,8 @@ const CourseDetailEditForm = ({
     course: Course;
     setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+    const revalidator = useRevalidator();
+
     const initialCourseDetails = course;
 
     const [courseDetailEdits, setCourseDetailEdits] = useReducer(
@@ -25,7 +27,8 @@ const CourseDetailEditForm = ({
         }),
         initialCourseDetails,
     );
-    const saveCourseChanges = async () => {
+    const saveCourseChanges = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         const graphqlMutation = `
             mutation {
                 updateCourse(
@@ -38,7 +41,10 @@ const CourseDetailEditForm = ({
                   success
                 }
             }`;
-        makeGraphQLQuery(graphqlMutation).then(() => setIsEditMode(false));
+        makeGraphQLQuery(graphqlMutation).then(() => {
+            revalidator.revalidate();
+            setIsEditMode(false);
+        });
     };
 
     const cancelEdit = () => {
