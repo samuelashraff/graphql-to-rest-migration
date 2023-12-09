@@ -1,4 +1,3 @@
-import Router from "koa-router";
 import { getDbInstance } from "../database/db";
 
 const db = getDbInstance();

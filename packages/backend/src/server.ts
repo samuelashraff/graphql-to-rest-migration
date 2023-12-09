@@ -3,7 +3,7 @@ import cors from "@koa/cors";
 import bodyParser from "koa-bodyparser";
 import Router from "koa-router";
 import { graphqlHTTP } from "koa-graphql";
-import { schema } from "./routes";
+import { schema } from "./graphql";
 
 const app = new Koa();
 

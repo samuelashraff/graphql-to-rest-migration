@@ -6,8 +6,6 @@ import {
     GraphQLSchema,
     GraphQLString,
 } from "graphql";
-import { graphqlHTTP } from "koa-graphql";
-import Router from "koa-router";
 import {
     getCourse,
     getCourses,
@@ -105,7 +103,6 @@ export const schema = new GraphQLSchema({
                 },
                 resolve: async (_, args) => {
                     try {
-                        console.log("hi");
                         await updateCourse(args);
                         return {
                             success: true,
