@@ -6,8 +6,8 @@ import { Card, CardContent } from "./ui/card";
 
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { BASE_URL } from "@/config";
 import { useRevalidator } from "react-router-dom";
+import { makeGraphQLQuery } from "@/main";
 
 export const LectureForm = ({
     setShowLectureForm,
@@ -39,14 +39,20 @@ export const LectureForm = ({
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const graphqlMutation = `mutation {
+            createLecture(
+                courseId: ${courseId}
+                date: "${formData.date}"
+                start_time: "${formData.start_time}"
+                end_time: "${formData.end_time}"
+                is_obligatory: ${formData.is_obligatory}
+                location: "${formData.location}"
+            ) {
+                success
+            }
+        }`;
         try {
-            fetch(`${BASE_URL}/courses/${courseId}/lectures`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            }).then(() => {
+            makeGraphQLQuery(graphqlMutation).then(() => {
                 setShowLectureForm(false);
                 revalidator.revalidate();
             });

@@ -1,4 +1,3 @@
-import Router from "koa-router";
 import { getDbInstance } from "../database/db";
 
 const db = getDbInstance();
@@ -33,10 +32,6 @@ export type Lecture = {
     location: string;
     is_obligatory: boolean;
 };
-
-export const coursesRouter = new Router({
-    prefix: "/courses",
-});
 
 export const getCourses = () => {
     return new Promise((resolve, reject) => {
@@ -164,47 +159,15 @@ export const deleteCourseById = async (id: number) => {
     });
 };
 
-coursesRouter.post("/:id/assignments", async (ctx) => {
-    const { id } = ctx.params;
-
-    const { type, deadline, is_obligatory, is_group } = ctx.request
-        .body as Assignment;
-
-    try {
-        await new Promise<void>((resolve, reject) => {
-            db.run(
-                `INSERT INTO assignments (course_id, type, deadline, is_obligatory, is_group) VALUES (?, ?, ?, ?, ?)`,
-                [id, type, deadline, is_obligatory, is_group],
-                (err) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                },
-            );
-        });
-        ctx.response.status = 201;
-    } catch (error) {
-        console.error(
-            "Error while inserting assignment into the database:",
-            error,
-        );
-        ctx.body = { error: "Internal Server Error" };
-        ctx.response.status = 500;
-    }
-});
-
-coursesRouter.post("/:id/lectures", async (ctx) => {
-    const { id } = ctx.params;
-    const { date, start_time, end_time, location, is_obligatory } = ctx.request
-        .body as Lecture;
+export const createLecture = async (args: any) => {
+    const { courseId, date, start_time, end_time, location, is_obligatory } =
+        args;
 
     try {
         await new Promise<void>((resolve, reject) => {
             db.run(
                 `INSERT INTO lectures (course_id, date, start_time, end_time, location, is_obligatory) VALUES (?, ?, ?, ?, ?, ?)`,
-                [id, date, start_time, end_time, location, is_obligatory],
+                [courseId, date, start_time, end_time, location, is_obligatory],
                 (err) => {
                     if (err) {
                         reject(err);
@@ -214,13 +177,134 @@ coursesRouter.post("/:id/lectures", async (ctx) => {
                 },
             );
         });
-        ctx.response.status = 201;
     } catch (error) {
         console.error(
             "Error while inserting lecture into the database:",
             error,
         );
-        ctx.body = { error: "Internal Server Error" };
-        ctx.response.status = 500;
+        throw new Error("Error while inserting lecture into the database");
     }
-});
+};
+
+export const createAssignment = async (args: any) => {
+    const { courseId, type, deadline, is_obligatory, is_group } = args;
+
+    try {
+        await new Promise<void>((resolve, reject) => {
+            db.run(
+                `INSERT INTO assignments (course_id, type, deadline, is_obligatory, is_group) VALUES (?, ?, ?, ?, ?)`,
+                [courseId, type, deadline, is_obligatory, is_group],
+                (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                },
+            );
+        });
+    } catch (error) {
+        console.error(
+            "Error while inserting assignment into the database:",
+            error,
+        );
+        throw new Error("Error while inserting assignment into the database");
+    }
+};
+
+function isLectureType(obj: any): obj is Lecture {
+    return "date" in obj;
+}
+
+export const getUpcomingEvents = async () => {
+    try {
+        const assignments: Assignment[] = await new Promise(
+            (resolve, reject) => {
+                db.all(
+                    `SELECT * FROM assignments 
+                    WHERE deadline >= DATE('now') 
+                    ORDER BY deadline ASC`,
+                    [],
+                    (err, rows) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(rows as Assignment[]);
+                        }
+                    },
+                );
+            },
+        );
+
+        const lectures: Lecture[] = await new Promise((resolve, reject) => {
+            db.all(
+                `SELECT * FROM lectures 
+                WHERE date >= DATE('now') 
+                ORDER BY date ASC`,
+                [],
+                (err, rows) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(rows as Lecture[]);
+                    }
+                },
+            );
+        });
+
+        // Combine assignments and lectures
+        const timetableData = [...assignments, ...lectures];
+
+        // Sort the combined data by deadline
+        timetableData.sort((a, b) => {
+            const dateA = isLectureType(a)
+                ? new Date(a.date)
+                : new Date(a.deadline);
+            const dateB = isLectureType(b)
+                ? new Date(b.date)
+                : new Date(b.deadline);
+
+            return dateA.valueOf() - dateB.valueOf();
+        });
+
+        return timetableData;
+    } catch (error) {
+        console.error("Error while querying the database:", error);
+    }
+};
+
+export const deleteLectureById = async (id: number) => {
+    try {
+        await new Promise<void>((resolve, reject) => {
+            db.run(`DELETE FROM lectures WHERE id = ${id}`, [], (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+
+        console.log("Lecture deleted from database");
+    } catch (error) {
+        console.error("Error while deleting lecture from database");
+    }
+};
+
+export const deleteAssignmentById = async (id: number) => {
+    try {
+        await new Promise<void>((resolve, reject) => {
+            db.run(`DELETE FROM assignments WHERE id = ${id}`, [], (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+
+        console.log("Assignment deleted from database");
+    } catch (error) {
+        console.error("Error while deleting assignment from database");
+    }
+};

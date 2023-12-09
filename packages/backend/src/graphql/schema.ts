@@ -5,114 +5,22 @@ import {
     GraphQLObjectType,
     GraphQLSchema,
     GraphQLString,
-    GraphQLUnionType,
 } from "graphql";
-import { graphqlHTTP } from "koa-graphql";
-import Router from "koa-router";
 import {
-    getAssignments,
     getCourse,
     getCourses,
-    getLectures,
     createCourse,
     deleteCourseById,
     updateCourse,
-} from "./courses";
-import { getUpcomingEvents } from "./timetable";
-import { deleteAssignmentById } from "./assignments";
-import { deleteLectureById } from "./lectures";
+    createLecture,
+    createAssignment,
+    deleteAssignmentById,
+    deleteLectureById,
+    getUpcomingEvents,
+} from "./resolvers";
+import { CourseType, UpcomingEvent, ResponseType } from "./types";
 
-export const gqlRouter = new Router();
-
-const ResponseType = new GraphQLObjectType({
-    name: "ResponseType",
-    fields: () => ({
-        success: { type: GraphQLBoolean },
-        message: { type: GraphQLString },
-    }),
-});
-
-const CourseType = new GraphQLObjectType({
-    name: "CourseType",
-    fields: () => ({
-        id: { type: GraphQLInt },
-        name: { type: GraphQLString },
-        credits: { type: GraphQLInt },
-        user_id: { type: GraphQLInt },
-        // TODO: convert status to enum
-        status: { type: GraphQLString },
-        notes: { type: GraphQLString },
-        start_date: { type: GraphQLString },
-        end_date: { type: GraphQLString },
-        responsible_teacher: { type: GraphQLString },
-        location: { type: GraphQLString },
-        course_link: { type: GraphQLString },
-        assignments: {
-            type: new GraphQLList(AssignmentType),
-            resolve: async (parent) => {
-                try {
-                    return await getAssignments(parent.id);
-                } catch (error) {
-                    console.error("Error while querying assignments:", error);
-                    throw new Error("Internal Server Error");
-                }
-            },
-        },
-        lectures: {
-            type: new GraphQLList(LectureType),
-            resolve: async (parent) => {
-                try {
-                    return await getLectures(parent.id);
-                } catch (error) {
-                    console.error("Error while querying lectures:", error);
-                    throw new Error("Internal Server Error");
-                }
-            },
-        },
-    }),
-});
-
-const AssignmentType = new GraphQLObjectType({
-    name: "AssignmentType",
-    fields: {
-        id: { type: GraphQLInt },
-        // TODO: convert type to enum
-        type: { type: GraphQLString },
-        // TODO: should be date?
-        deadline: { type: GraphQLString },
-        is_obligatory: { type: GraphQLBoolean },
-        is_group: { type: GraphQLBoolean },
-    },
-});
-
-const LectureType = new GraphQLObjectType({
-    name: "LectureType",
-    fields: {
-        id: { type: GraphQLInt },
-        // TODO: should be date?
-        date: { type: GraphQLString },
-        start_time: { type: GraphQLString },
-        end_time: { type: GraphQLString },
-        location: { type: GraphQLString },
-        is_obligatory: { type: GraphQLBoolean },
-    },
-});
-
-const UpcomingEvent = new GraphQLUnionType({
-    name: "UpcomingEventType",
-    types: [AssignmentType, LectureType],
-    resolveType(value) {
-        if (value.deadline) {
-            return AssignmentType;
-        } else if (value.date) {
-            return LectureType;
-        }
-        // If the type cannot be determined, you can return null or throw an error.
-        return null;
-    },
-});
-
-const schema = new GraphQLSchema({
+export const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "RootQueryType",
         fields: {
@@ -195,7 +103,6 @@ const schema = new GraphQLSchema({
                 },
                 resolve: async (_, args) => {
                     try {
-                        console.log("hi");
                         await updateCourse(args);
                         return {
                             success: true,
@@ -225,6 +132,29 @@ const schema = new GraphQLSchema({
                     }
                 },
             },
+            createLecture: {
+                type: ResponseType,
+                args: {
+                    courseId: { type: GraphQLInt },
+                    date: { type: GraphQLString },
+                    start_time: { type: GraphQLString },
+                    end_time: { type: GraphQLString },
+                    location: { type: GraphQLString },
+                    is_obligatory: { type: GraphQLBoolean },
+                },
+                resolve: async (_, args) => {
+                    try {
+                        await createLecture(args);
+                        return {
+                            success: true,
+                            message: "Lecture created successfully",
+                        };
+                    } catch (error) {
+                        console.error("Error creating course:", error);
+                        throw new Error("Failed to create course");
+                    }
+                },
+            },
             deleteLecture: {
                 type: GraphQLBoolean,
                 args: {
@@ -240,6 +170,28 @@ const schema = new GraphQLSchema({
                     } catch (error) {
                         console.error("Error deleting course:", error);
                         throw new Error("Failed to delete course");
+                    }
+                },
+            },
+            createAssignment: {
+                type: ResponseType,
+                args: {
+                    courseId: { type: GraphQLInt },
+                    type: { type: GraphQLString },
+                    deadline: { type: GraphQLString },
+                    is_obligatory: { type: GraphQLBoolean },
+                    is_group: { type: GraphQLBoolean },
+                },
+                resolve: async (_, args) => {
+                    try {
+                        await createAssignment(args);
+                        return {
+                            success: true,
+                            message: "Assignment created successfully",
+                        };
+                    } catch (error) {
+                        console.error("Error creating course:", error);
+                        throw new Error("Failed to create course");
                     }
                 },
             },
@@ -264,11 +216,3 @@ const schema = new GraphQLSchema({
         },
     }),
 });
-
-gqlRouter.all(
-    "/graphql",
-    graphqlHTTP({
-        schema,
-        graphiql: true,
-    }),
-);
