@@ -3,6 +3,7 @@ import ReactModal from "react-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BASE_URL } from "@/config";
+import { useRevalidator } from "react-router-dom";
 
 ReactModal.setAppElement("#root");
 
@@ -13,6 +14,8 @@ export function CreateCourseModal({
     isOpen: boolean;
     closeModal: React.MouseEventHandler;
 }) {
+    const revalidator = useRevalidator();
+
     const [formData, setFormData] = useState({
         name: "",
         status: "",
@@ -27,7 +30,8 @@ export function CreateCourseModal({
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         try {
             fetch(BASE_URL, {
                 method: "POST",
@@ -35,7 +39,10 @@ export function CreateCourseModal({
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(formData),
-            }).then((response) => response.json());
+            }).then(() => {
+                revalidator.revalidate();
+                closeModal({} as React.MouseEvent);
+            });
         } catch (e) {
             console.error("Error: " + e);
         }
