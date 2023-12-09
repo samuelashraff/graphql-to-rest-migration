@@ -53,4 +53,6 @@ rootRouter.post("/", async (ctx) => {
             }
         },
     );
+
+    ctx.response.status = 201;
 });

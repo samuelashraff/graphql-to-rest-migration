@@ -3,7 +3,7 @@ import { Course } from "@/types";
 import { Label } from "@radix-ui/react-label";
 import { Trash, Edit } from "lucide-react";
 import { useReducer, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useRevalidator } from "react-router-dom";
 import { Button } from "./ui/button";
 import { CardContent, Card } from "./ui/card";
 import { Input } from "./ui/input";
@@ -17,6 +17,7 @@ const CourseDetailEditForm = ({
     setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
     const initialCourseDetails = course;
+    const revalidator = useRevalidator();
 
     const [courseDetailEdits, setCourseDetailEdits] = useReducer(
         (prevCourse: Course, nextCourse: Partial<Course>) => ({
@@ -25,7 +26,8 @@ const CourseDetailEditForm = ({
         }),
         initialCourseDetails,
     );
-    const saveCourseChanges = async () => {
+    const saveCourseChanges = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         try {
             await fetch(`${BASE_URL}/courses/${course.id}`, {
                 method: "PUT",
@@ -34,6 +36,7 @@ const CourseDetailEditForm = ({
                 },
                 body: JSON.stringify(courseDetailEdits),
             });
+            revalidator.revalidate();
             setIsEditMode(false);
         } catch (error) {
             console.error("Error: ", error);
