@@ -17,6 +17,8 @@ import {
     createCourse,
     deleteCourseById,
     updateCourse,
+    createLecture,
+    createAssignment,
 } from "./courses";
 import { getUpcomingEvents } from "./timetable";
 import { deleteAssignmentById } from "./assignments";
@@ -225,6 +227,29 @@ const schema = new GraphQLSchema({
                     }
                 },
             },
+            createLecture: {
+                type: ResponseType,
+                args: {
+                    courseId: { type: GraphQLInt },
+                    date: { type: GraphQLString },
+                    start_time: { type: GraphQLString },
+                    end_time: { type: GraphQLString },
+                    location: { type: GraphQLString },
+                    is_obligatory: { type: GraphQLBoolean },
+                },
+                resolve: async (_, args) => {
+                    try {
+                        await createLecture(args);
+                        return {
+                            success: true,
+                            message: "Lecture created successfully",
+                        };
+                    } catch (error) {
+                        console.error("Error creating course:", error);
+                        throw new Error("Failed to create course");
+                    }
+                },
+            },
             deleteLecture: {
                 type: GraphQLBoolean,
                 args: {
@@ -240,6 +265,28 @@ const schema = new GraphQLSchema({
                     } catch (error) {
                         console.error("Error deleting course:", error);
                         throw new Error("Failed to delete course");
+                    }
+                },
+            },
+            createAssignment: {
+                type: ResponseType,
+                args: {
+                    courseId: { type: GraphQLInt },
+                    type: { type: GraphQLString },
+                    deadline: { type: GraphQLString },
+                    is_obligatory: { type: GraphQLBoolean },
+                    is_group: { type: GraphQLBoolean },
+                },
+                resolve: async (_, args) => {
+                    try {
+                        await createAssignment(args);
+                        return {
+                            success: true,
+                            message: "Assignment created successfully",
+                        };
+                    } catch (error) {
+                        console.error("Error creating course:", error);
+                        throw new Error("Failed to create course");
                     }
                 },
             },

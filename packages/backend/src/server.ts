@@ -1,13 +1,12 @@
 import Koa from "koa";
 import cors from "@koa/cors";
 import bodyParser from "koa-bodyparser";
-import { coursesRouter, gqlRouter } from "./routes";
+import { gqlRouter } from "./routes";
 
 const app = new Koa();
 
 app.use(bodyParser());
 app.use(cors());
-app.use(coursesRouter.routes());
 app.use(gqlRouter.routes());
 
 const PORT = process.env.PORT || 4000;
