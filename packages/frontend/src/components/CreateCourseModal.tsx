@@ -3,6 +3,7 @@ import ReactModal from "react-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { makeGraphQLQuery } from "@/main";
+import { useRevalidator } from "react-router-dom";
 
 ReactModal.setAppElement("#root");
 
@@ -13,6 +14,8 @@ export function CreateCourseModal({
     isOpen: boolean;
     closeModal: React.MouseEventHandler;
 }) {
+    const revalidator = useRevalidator();
+
     const [formData, setFormData] = useState({
         name: "",
         status: "",
@@ -27,7 +30,8 @@ export function CreateCourseModal({
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         const graphqlMutation = `
             mutation {
                 createCourse(
@@ -40,7 +44,10 @@ export function CreateCourseModal({
                 }
             }
             `;
-        await makeGraphQLQuery(graphqlMutation);
+        await makeGraphQLQuery(graphqlMutation).then(() => {
+            closeModal({} as React.MouseEvent);
+            revalidator.revalidate();
+        });
     };
 
     return (

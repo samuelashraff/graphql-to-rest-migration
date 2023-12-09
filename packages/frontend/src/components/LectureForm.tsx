@@ -7,6 +7,7 @@ import { Card, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { BASE_URL } from "@/config";
+import { useRevalidator } from "react-router-dom";
 
 export const LectureForm = ({
     setShowLectureForm,
@@ -15,6 +16,8 @@ export const LectureForm = ({
     setShowLectureForm: React.Dispatch<React.SetStateAction<boolean>>;
     courseId: number;
 }) => {
+    const revalidator = useRevalidator();
+
     const [formData, setFormData] = useState({
         location: "",
         date: "",
@@ -34,7 +37,8 @@ export const LectureForm = ({
         });
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         try {
             fetch(`${BASE_URL}/courses/${courseId}/lectures`, {
                 method: "POST",
@@ -42,7 +46,10 @@ export const LectureForm = ({
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(formData),
-            }).then(() => setShowLectureForm(false));
+            }).then(() => {
+                setShowLectureForm(false);
+                revalidator.revalidate();
+            });
         } catch (e) {
             console.error("Error: " + e);
         }
