@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import { CourseDetailCard } from "./components/CourseDetails";
 import { Typography } from "./components/ui/typogrpahy";
 import { Assignment, Course, Lecture } from "./types";
@@ -89,7 +89,7 @@ export const CourseView = () => {
         <div className="flex flex-col gap-10 flex-grow">
             <div className="flex gap-10">
                 <Button asChild className="self-center">
-                    <a href="/">Back</a>
+                    <Link to={"/"}>Back</Link>
                 </Button>
                 <Typography variant="h1">{data.course.name}</Typography>
             </div>
