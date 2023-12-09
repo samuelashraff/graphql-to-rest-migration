@@ -117,6 +117,41 @@ export const createCourse = async (args: any) => {
     });
 };
 
+export const updateCourse = async (args: any) => {
+    const { id, credits, location, responsible_teacher, status } = args as {
+        id: string;
+        credits: number;
+        location: string;
+        responsible_teacher: string;
+        status: string;
+    };
+    return await new Promise<void>((resolve, reject) => {
+        db.run(
+            `UPDATE courses SET
+            credits = $credits,
+            status = $status,
+            responsible_teacher = $responsible_teacher,
+            location = $location
+            WHERE id = $id`,
+            {
+                $credits: credits,
+                $status: status,
+                $responsible_teacher: responsible_teacher,
+                $location: location,
+                $id: id,
+            },
+            (err) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            },
+        );
+    });
+};
+
 export const deleteCourseById = async (id: number) => {
     await new Promise<void>((resolve, reject) => {
         db.run(`DELETE FROM courses WHERE id = ?`, [id], (err) => {
@@ -128,62 +163,6 @@ export const deleteCourseById = async (id: number) => {
         });
     });
 };
-
-coursesRouter.put("/:id", async (ctx, _next) => {
-    const { id } = ctx.params;
-    const {
-        name,
-        start_date,
-        end_date,
-        responsible_teacher,
-        location,
-        course_link,
-        credits,
-        status,
-        notes,
-    } = ctx.request.body as Course;
-
-    try {
-        await new Promise<void>((resolve, reject) => {
-            db.run(
-                `UPDATE courses SET
-                name = $name,
-                credits = $credits,
-                status = $status,
-                notes = $notes,
-                start_date = $start_date,
-                end_date = $end_date,
-                responsible_teacher = $responsible_teacher,
-                location = $location,
-                course_link = $course_link
-            WHERE id = $id`,
-                {
-                    $name: name,
-                    $credits: credits,
-                    $status: status,
-                    $notes: notes,
-                    $start_date: start_date,
-                    $end_date: end_date,
-                    $responsible_teacher: responsible_teacher,
-                    $location: location,
-                    $course_link: course_link,
-                    $id: id,
-                },
-                (err) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                },
-            );
-        });
-        ctx.status = 200;
-    } catch (error) {
-        ctx.status = 500;
-        console.error("Error while updating course in DB: ", error);
-    }
-});
 
 coursesRouter.post("/:id/assignments", async (ctx) => {
     const { id } = ctx.params;
